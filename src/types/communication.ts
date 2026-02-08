@@ -6,7 +6,7 @@ export interface HomeAssistantContextType {
 
     entities: EntityState[];
 
-    sendMessage: (message: object) => void;
+    sendCommand: (message: object) => void;
     lastMessage: Record<string, any> | null;
 
     reconnect: () => void;

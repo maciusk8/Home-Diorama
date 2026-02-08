@@ -10,17 +10,16 @@ export const HomeAssistantProvider: React.FC<HomeAssistantProviderProps> = ({ ha
     const [entities, setEntities] = useState<EntityState[]>([]);
     const messageId = useRef(1);
 
-    const sendCommand = (type: string, additionalData?: object) => {
+    const sendCommand = (message: object) => {
         sendMessage({
             id: messageId.current++,
-            type,
-            ...additionalData
+            ...message
         });
     };
 
     useEffect(() => {
         if (status === 'authenticated') {
-            sendCommand('get_states');
+            sendCommand({ type: 'get_states' });
         }
     }, [status]);
 
@@ -36,10 +35,7 @@ export const HomeAssistantProvider: React.FC<HomeAssistantProviderProps> = ({ ha
         status,
         entities,
         lastMessage,
-        sendMessage: (message: object) => {
-            const id = messageId.current++;
-            sendMessage({ id, ...message });
-        },
+        sendCommand,
         error,
         reconnect
     };

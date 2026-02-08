@@ -1,42 +1,36 @@
-import { useMemo } from 'react';
 import { useHomeAssistant } from './useHomeAssistant';
 
 export function useLights() {
-    const { entities, sendMessage } = useHomeAssistant();
-
-    const lights = useMemo(() => {
-        return entities.filter(entity => entity.entity_id.startsWith('light.'));
-    }, [entities]);
+    const { entities, sendCommand } = useHomeAssistant();
+    
+    const lights = entities.filter(e => e.entity_id.startsWith('light.'));
 
     const turnOn = (entityId: string) => {
-        sendMessage({
+        sendCommand({
             type: 'call_service',
             domain: 'light',
             service: 'turn_on',
             target: { entity_id: entityId }
         });
     };
-
     const turnOff = (entityId: string) => {
-        sendMessage({
+        sendCommand({
             type: 'call_service',
             domain: 'light',
             service: 'turn_off',
             target: { entity_id: entityId }
         });
     };
-
     const toggle = (entityId: string) => {
-        sendMessage({
+        sendCommand({
             type: 'call_service',
             domain: 'light',
             service: 'toggle',
             target: { entity_id: entityId }
         });
     };
-
     const setBrightness = (entityId: string, brightness: number) => {
-        sendMessage({
+        sendCommand({
             type: 'call_service',
             domain: 'light',
             service: 'turn_on',
@@ -44,6 +38,15 @@ export function useLights() {
             service_data: { brightness }
         });
     };
+    const setColor = (entityId: string, color: string) => {
+        sendCommand({
+            type: 'call_service',
+            domain: 'light',
+            service: 'turn_on',
+            target: { entity_id: entityId },
+            service_data: { color_name: color }
+        });
+    }
 
     return { lights, turnOn, turnOff, toggle, setBrightness };
 }
