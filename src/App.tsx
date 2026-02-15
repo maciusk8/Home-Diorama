@@ -26,8 +26,10 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <div className="App">
-        <NavBar {...navProps} />
+      <div className={`App ${!isEditing ? 'nav-autohide' : ''}`}>
+        <div className="nav-zone">
+          <NavBar {...navProps} />
+        </div>
 
         <Routes>
           <Route path="/:roomName" element={<RoomView rooms={rooms} setRooms={setRooms} isEditing={isEditing} />} />

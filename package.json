@@ -12,6 +12,8 @@
   "dependencies": {
     "@mdi/js": "^7.4.47",
     "@mdi/react": "^1.6.1",
+    "@uiw/react-color-swatch": "^2.9.5",
+    "@uiw/react-color-wheel": "^2.9.5",
     "bootstrap": "^5.3.8",
     "home-assistant-js-websocket": "^9.0.0",
     "react": "^19.2.0",
