@@ -1,25 +1,39 @@
 import './App.css';
-import Light from './components/Light';
-import { useHomeAssistant } from './hooks/useHomeAssistant';
-import { useLights } from './hooks/useLights';
-
+import { useEffect, useState } from 'react';
+import NavBar from './components/NavBar';
+import RoomView from './components/RoomView';
+import type { Room } from './types/rooms';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 export default function App() {
-  const { status, error } = useHomeAssistant();
-  const { lights } = useLights();
+  const [isEditing, setEditing] = useState<boolean>(false);
+  const [rooms, setRooms] = useState<Room[]>(() => {
+    const saved = localStorage.getItem("rooms");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("rooms", JSON.stringify(rooms));
+  }, [rooms]);
+
+  const navProps = {
+    rooms,
+    setRooms,
+    isEditing,
+    setEditing
+  };
+
 
   return (
-    <>
+    <BrowserRouter>
       <div className="App">
-        <h1>Home Assistant Frontend</h1>
-        <p>Status: {status}</p>
-        {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-      </div>
+        <NavBar {...navProps} />
 
-      <div>
-        <h2>Lights</h2>
-        {lights.map(light => <Light key={light.entity_id} light={light} />)}
+        <Routes>
+          <Route path="/:roomName" element={<RoomView rooms={rooms} setRooms={setRooms} isEditing={isEditing} />} />
+          <Route path="/" element={<div>Choose or add a room from the navigation bar</div>} />
+        </Routes>
       </div>
-    </>
+    </BrowserRouter>
   );
 }
