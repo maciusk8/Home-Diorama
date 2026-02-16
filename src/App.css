@@ -47,6 +47,8 @@ body {
   width: 100%;
   border-radius: 0;
   margin: 0;
+  left: 0;
+  transform: none;
 }
 
 .nav-zone .nav {
@@ -58,10 +60,13 @@ body {
   position: relative;
   z-index: 2002;
   width: fit-content;
-  margin: 0 auto;
+  margin: 0;
+  padding: 0;
   flex-wrap: nowrap;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .nav-autohide .nav-zone .nav {
@@ -338,4 +343,14 @@ body {
 .wheel-palette-btn-done:hover {
   background: #0b5ed7;
   border-color: transparent;
+}
+
+.drag-pin {
+  width: 20px;
+  height: 20px;
+  background-color: #0d6efd;
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  cursor: grabbing;
 }

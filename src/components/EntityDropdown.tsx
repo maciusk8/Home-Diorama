@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { Form } from "react-bootstrap";
 import type { EntityState } from "../types/communication";
+import { SidebarDraggableItem } from "./SidebarDragableItem";
 export default function EntityDropdown({ entities }: { entities: EntityState[] }) {
+
     const [filter, setFilter] = useState('');
+
     const filtered = entities.filter(entity => {
         const name = (entity.attributes.friendly_name || entity.entity_id).toLowerCase();
         return !filter || name.includes(filter.toLowerCase());
     });
+
     return (
         <div className="entity-list">
             <Form.Control
@@ -17,6 +21,7 @@ export default function EntityDropdown({ entities }: { entities: EntityState[] }
             />
             <ul className="entity-list-items">
                 {filtered.map(entity => (
+                    <SidebarDraggableItem id={entity.entity_id} data={entity}>
                     <li
                         key={entity.entity_id}
                         className="entity-list-item"
@@ -24,6 +29,7 @@ export default function EntityDropdown({ entities }: { entities: EntityState[] }
                     >
                         {entity.attributes.friendly_name || entity.entity_id}
                     </li>
+                    </SidebarDraggableItem>
                 ))}
             </ul>
         </div>

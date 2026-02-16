@@ -7,9 +7,6 @@ export type Room = {
 
 export type Entity = {
   id: string;         
-  x: number;           
-  y: number;           
-  type: string;      
-  label?: string;     
-  icon?: string;       
+  x: number;    // %        
+  y: number;    // %         
 };
