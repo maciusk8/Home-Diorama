@@ -2,9 +2,9 @@ import { useState } from 'react';
 import Icon from '@mdi/react';
 import { mdiPencilOutline } from '@mdi/js';
 import AbstractEntityCard from './AbstractEntityCard';
-import { type EntityCardProps } from './EntityCardProvider';
+import { type EntityEditCardProps } from '../../types/EntityCard';
 
-export default function EntityEditCard({ entityId, customName, entityData, onClose, onRemove, onRename }: EntityCardProps) {
+export default function EntityEditCard({ entityId, customName, entityData, onClose, onRemove, onRename }: EntityEditCardProps) {
     const displayName = customName || entityData?.attributes.friendly_name || entityId;
     const [isEditing, setIsEditing] = useState(false);
     const [nameInput, setNameInput] = useState(displayName);

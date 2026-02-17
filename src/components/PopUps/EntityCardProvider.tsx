@@ -13,26 +13,19 @@ interface EntityCardProviderProps {
     onRename: (newName: string) => void;
 }
 
-export interface EntityCardProps {
-    entityId: string;
-    customName?: string;
-    entityData?: EntityState;
-    onClose: () => void;
-    onRemove: () => void;
-    onRename: (newName: string) => void;
-}
 
 export default function EntityCardProvider(props: EntityCardProviderProps) {
     if (props.isEditing) {
         return <EntityEditCard {...props} />;
     }
 
+    const { onRemove, onRename, isEditing, ...baseProps } = props;
     const domain = props.entityId.split('.')[0];
 
     switch (domain) {
         case 'switch':
-            return <EntitySwitchCard {...props} />;
+            return <EntitySwitchCard {...baseProps} />;
         default:
-            return <EntityDefaultCard {...props} />;
+            return <EntityDefaultCard {...baseProps} />;
     }
 }

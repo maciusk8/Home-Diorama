@@ -1,9 +1,9 @@
 import AbstractEntityCard from './AbstractEntityCard';
-import { type EntityCardProps } from './EntityCardProvider';
+import { type BaseEntityCardProps } from '../../types/EntityCard';
 import useSwitches from '../../hooks/Entities/useSwitches';
 import { Button } from 'react-bootstrap';
 
-export default function EntitySwitchCard({ entityId, customName, entityData, onClose, onRemove, onRename }: EntityCardProps) {
+export default function EntitySwitchCard({ entityId, customName, entityData, onClose }: BaseEntityCardProps) {
     const displayName = customName || entityData?.attributes.friendly_name || entityId;
     const { toggle } = useSwitches();
 
