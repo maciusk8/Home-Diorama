@@ -6,7 +6,8 @@ export type Room = {
 }
 
 export type Entity = {
-  id: string;         
+  id: string;
   x: number;    // %        
-  y: number;    // %         
+  y: number;    // %
+  customName?: string;
 };
