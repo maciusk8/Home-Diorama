@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Form } from "react-bootstrap";
 import type { EntityState } from "../types/communication";
-import { SidebarDraggableItem } from "./SidebarDragableItem";
+import { SidebarDraggableItem } from "./DnD/SidebarDragableItem";
 export default function EntityDropdown({ entities }: { entities: EntityState[] }) {
 
     const [filter, setFilter] = useState('');

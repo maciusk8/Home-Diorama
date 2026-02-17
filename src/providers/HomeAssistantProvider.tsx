@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../hooks/WebSocket/useAuth';
 import type { EntityState, HomeAssistantContextType, HomeAssistantProviderProps } from '../types/communication';
 
 export const HAContext = React.createContext<HomeAssistantContextType | null>(null);

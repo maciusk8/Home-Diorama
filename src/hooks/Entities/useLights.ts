@@ -1,4 +1,4 @@
-import { useHomeAssistant } from './useHomeAssistant';
+import { useHomeAssistant } from '../WebSocket/useHomeAssistant';
 
 export function useLights() {
     const { entities, sendCommand } = useHomeAssistant();

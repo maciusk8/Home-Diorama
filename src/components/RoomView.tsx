@@ -5,11 +5,11 @@ import type { Room, Entity } from '../types/rooms';
 
 import ImageDisplay from './ImageDisplay';
 import EntityDropdown from './EntityDropdown';
-import WheelPalette from './WheelPalette';
-import { useEntities } from '../hooks/useEntities';
-import { DroppableMap } from './DopableMap';
-import { DraggablePin } from './DragablePin';
-import EntityCard from './EntityCard';
+import WheelPalette from './PopUps/WheelPalette';
+import { useEntities } from '../hooks/Entities/useEntities';
+import { DroppableMap } from './DnD/DopableMap';
+import DraggablePin from './DnD/DragablePin';
+import EntityCardProvider from './PopUps/EntityCardProvider';
 
 export default function RoomView({ rooms, setRooms, isEditing }: { rooms: Room[], setRooms: (rooms: Room[]) => void, isEditing: boolean }) {
     const { roomName } = useParams();
@@ -137,14 +137,15 @@ export default function RoomView({ rooms, setRooms, isEditing }: { rooms: Room[]
             )}
 
             {selectedEntityId && selectedRoomEntity && (
-                <EntityCard
+                <EntityCardProvider
                     entityId={selectedEntityId}
                     customName={selectedRoomEntity.customName}
                     entityData={selectedEntityData}
                     onClose={() => setSelectedEntityId(null)}
-                    onRename={name => updateEntity(selectedEntityId, { customName: name })}
-                    onRemove={() => removeEntity(selectedEntityId)}
-                />
+                    onRename={(name: string) => updateEntity(selectedEntityId, { customName: name })}
+                    onRemove={() => removeEntity(selectedEntityId)} 
+                    isEditing={isEditing}               
+                     />
             )}
         </div>
     );

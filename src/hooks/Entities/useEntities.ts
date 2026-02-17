@@ -1,4 +1,4 @@
-import { useHomeAssistant } from "./useHomeAssistant";
+import { useHomeAssistant } from "../WebSocket/useHomeAssistant";
 
 export function useEntities() {
     const context = useHomeAssistant()

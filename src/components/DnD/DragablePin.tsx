@@ -11,7 +11,7 @@ interface DraggablePinProps {
 
 const LONG_PRESS_MS = 200;
 
-export function DraggablePin({ id, x, y, onTap, isEditing }: DraggablePinProps) {
+export default function DraggablePin({ id, x, y, onTap, isEditing }: DraggablePinProps) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `pin-${id}`,
     data: { type: 'pin', entityId: id },
