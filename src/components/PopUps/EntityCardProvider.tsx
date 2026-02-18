@@ -1,31 +1,27 @@
 import type { EntityState } from '../../types/communication';
-import EntityEditCard from './EntityEditCard';
 import EntityDefaultCard from './EntityDefaultCard';
 import EntitySwitchCard from './EntitySwitchCard';
 
 interface EntityCardProviderProps {
     entityId: string;
+    domain: string;
     customName?: string;
     entityData?: EntityState;
-    isEditing: boolean;
     onClose: () => void;
-    onRemove: () => void;
-    onRename: (newName: string) => void;
 }
 
 
-export default function EntityCardProvider(props: EntityCardProviderProps) {
-    if (props.isEditing) {
-        return <EntityEditCard {...props} />;
-    }
+import EntityLightCard from './EntityLightCard';
 
-    const { onRemove, onRename, isEditing, ...baseProps } = props;
-    const domain = props.entityId.split('.')[0];
+export default function EntityCardProvider(props: EntityCardProviderProps) {
+    const { entityId, domain, ...baseProps } = props;
 
     switch (domain) {
         case 'switch':
-            return <EntitySwitchCard {...baseProps} />;
+            return <EntitySwitchCard entityId={entityId} {...baseProps} />;
+        case 'light':
+            return <EntityLightCard entityId={entityId} {...baseProps} />;
         default:
-            return <EntityDefaultCard {...baseProps} />;
+            return <EntityDefaultCard entityId={entityId} {...baseProps} />;
     }
 }

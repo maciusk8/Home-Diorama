@@ -4,7 +4,7 @@
 > **Work In Progress (WIP)**
 > Projekt jest w fazie aktywnego rozwoju. Niektóre funkcjonalności mogą ulegać zmianom.
 
-## O Projekcie (About Project)
+## O Projekcie
 Ten projekt to zaawansowany serwer klienta dla Home Assistant, który łączy się z backendem po tokenie użytkownika. Głównym założeniem jest wykorzystanie potencjału współczesnych modeli AI (generatywnej sztucznej inteligencji), które pozwalają w dokładny i estetyczny sposób przerabiać zdjęcia rzeczywistych pokoi na stylizowane widoki makietowe (maquette-like views).
 
 Aplikacja zrywa z nudnym układem kafelkowym. Zamiast tego, "ożywia" wygenerowane przez AI wizualizacje, pozwalając na interakcję. Dzięki CSS i nakładkom, stan świateł czy przełączników jest wizualizowany bezpośrednio na grafice, a interfejs Drag & Drop pozwala na intuicyjne rozmieszczenie encji w przestrzeni wirtualnego pokoju.

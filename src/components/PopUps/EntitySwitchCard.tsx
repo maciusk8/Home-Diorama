@@ -8,6 +8,8 @@ import { getRelativeTime } from '../../utils/time';
 import { DndContext, useDraggable, useSensor, useSensors, PointerSensor, type DragEndEvent } from '@dnd-kit/core';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 
+//vibe coded, needs refactor and cleanup, but works and look good enough for now.
+
 function DraggableThumb({ isOn }: { isOn: boolean }) {
     const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
         id: 'switch-thumb',

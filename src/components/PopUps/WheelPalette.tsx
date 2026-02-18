@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import Wheel from '@uiw/react-color-wheel';
 import { hsvaToHex, hexToHsva } from '@uiw/color-convert';
 import Icon from '@mdi/react';
 import { mdiPalette } from '@mdi/js';
 import type { HsvaColor } from '@uiw/color-convert';
 import PopupOverlay from './PopupOverlay';
+import ColorControl from '../Shared/ColorControl';
 
 interface WheelPaletteProps {
     currentColor?: string;
@@ -19,24 +19,10 @@ export default function WheelPalette({ currentColor, onColorChange }: WheelPalet
         currentColor ? hexToHsva(currentColor) : DEFAULT_HSVA
     );
 
-    const handleChange = (color: { hsva: HsvaColor }) => {
-        setHsva(color.hsva);
-        onColorChange(hsvaToHex(color.hsva));
-    };
-
     const clearColor = () => {
         setHsva(DEFAULT_HSVA);
         onColorChange('');
         setOpen(false);
-    };
-
-    const handleHexInput = (value: string) => {
-        const hex = value.startsWith('#') ? value : `#${value}`;
-        if (/^#[0-9a-fA-F]{6}$/.test(hex)) {
-            const newHsva = hexToHsva(hex);
-            setHsva(newHsva);
-            onColorChange(hex);
-        }
     };
 
     return (
@@ -51,47 +37,23 @@ export default function WheelPalette({ currentColor, onColorChange }: WheelPalet
 
             {isOpen && (
                 <PopupOverlay onClose={() => setOpen(false)}>
-                    <Wheel
-                        color={hsva}
-                        onChange={handleChange}
-                        width={220}
-                        height={220}
-                    />
-                    <div className="wheel-palette-brightness">
-                        <label className="wheel-palette-brightness-label">Brightness</label>
-                        <input
-                            type="range"
-                            min={0}
-                            max={100}
-                            value={hsva.v}
-                            className="wheel-palette-brightness-slider"
-                            style={{
-                                background: `linear-gradient(to right, #000, hsl(${hsva.h}, ${hsva.s}%, 50%))`
-                            }}
-                            onChange={(e) => {
-                                const newHsva = { ...hsva, v: Number(e.target.value) };
-                                setHsva(newHsva);
-                                onColorChange(hsvaToHex(newHsva));
+                    <div className="entity-card" onClick={(e) => e.stopPropagation()}>
+                        <h3 className="entity-card-title" style={{ marginBottom: '1rem' }}>Background Color</h3>
+                        <ColorControl
+                            color={hsvaToHex(hsva)}
+                            onChange={(hex) => { 
+                                setHsva(hexToHsva(hex));
+                                onColorChange(hex); 
                             }}
                         />
-                    </div>
-                    <div
-                        className="wheel-palette-preview"
-                        style={{ backgroundColor: hsvaToHex(hsva) }}
-                    />
-                    <input
-                        className="wheel-palette-hex-input"
-                        value={hsvaToHex(hsva)}
-                        onChange={(e) => handleHexInput(e.target.value)}
-                        spellCheck={false}
-                    />
-                    <div className="wheel-palette-actions">
-                        <button className="wheel-palette-btn" onClick={clearColor}>
-                            Clear
-                        </button>
-                        <button className="wheel-palette-btn wheel-palette-btn-done" onClick={() => setOpen(false)}>
-                            Done
-                        </button>
+                        <div className="wheel-palette-footer">
+                            <button className="wheel-palette-btn" onClick={clearColor}>
+                                Clear
+                            </button>
+                            <button className="wheel-palette-btn wheel-palette-btn-done" onClick={() => setOpen(false)}>
+                                Done
+                            </button>
+                        </div>
                     </div>
                 </PopupOverlay>
             )}

@@ -2,7 +2,7 @@ import { useHomeAssistant } from '../WebSocket/useHomeAssistant';
 
 export function useLights() {
     const { entities, sendCommand } = useHomeAssistant();
-    
+
     const lights = entities.filter(e => e.entity_id.startsWith('light.'));
 
     const turnOn = (entityId: string) => {
@@ -48,5 +48,25 @@ export function useLights() {
         });
     }
 
-    return { lights, turnOn, turnOff, toggle, setBrightness };
+    const setHsColor = (entityId: string, h: number, s: number) => {
+        sendCommand({
+            type: 'call_service',
+            domain: 'light',
+            service: 'turn_on',
+            target: { entity_id: entityId },
+            service_data: { hs_color: [h, s] }
+        });
+    }
+
+    const setColorTemp = (entityId: string, temp: number) => {
+        sendCommand({
+            type: 'call_service',
+            domain: 'light',
+            service: 'turn_on',
+            target: { entity_id: entityId },
+            service_data: { kelvin: temp }
+        });
+    }
+
+    return { lights, turnOn, turnOff, toggle, setBrightness, setColor, setHsColor, setColorTemp };
 }
