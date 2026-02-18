@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Form } from "react-bootstrap";
 import type { EntityState } from "../types/communication";
-import { SidebarDraggableItem } from "./SidebarDragableItem";
+import { SidebarDraggableItem } from "./DnD/SidebarDragableItem";
 export default function EntityDropdown({ entities }: { entities: EntityState[] }) {
 
     const [filter, setFilter] = useState('');
@@ -21,9 +21,8 @@ export default function EntityDropdown({ entities }: { entities: EntityState[] }
             />
             <div className="entity-list-items">
                 {filtered.map(entity => (
-                    <SidebarDraggableItem id={entity.entity_id} data={entity}>
+                    <SidebarDraggableItem key={entity.entity_id} id={entity.entity_id} data={entity}>
                         <div
-                            key={entity.entity_id}
                             className="entity-list-item"
                             onClick={() => console.log(entity)}
                         >

@@ -5,9 +5,10 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
+    host: '0.0.0.0',
     proxy: {
       '/api': {
-        target: 'http://192.168.1.75:8123', // Twój adres IP z błędu
+        target: 'http://192.168.1.75:8123', 
         changeOrigin: true,
         secure: false,
       }

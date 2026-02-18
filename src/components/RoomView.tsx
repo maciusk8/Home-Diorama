@@ -5,17 +5,15 @@ import type { Room, Entity } from '../types/rooms';
 
 import ImageDisplay from './ImageDisplay';
 import EntityDropdown from './EntityDropdown';
-import WheelPalette from './WheelPalette';
-import { useEntities } from '../hooks/useEntities';
-import { DroppableMap } from './DopableMap';
-import { DraggablePin } from './DragablePin';
-import EntityCard from './EntityCard';
+import WheelPalette from './PopUps/WheelPalette';
+import { useEntities } from '../hooks/Entities/useEntities';
+import { DroppableMap } from './DnD/DopableMap';
+import PinProvider from './PinProvider';
 
 export default function RoomView({ rooms, setRooms, isEditing }: { rooms: Room[], setRooms: (rooms: Room[]) => void, isEditing: boolean }) {
     const { roomName } = useParams();
     const entitiesFromHook = useEntities();
     const [activeId, setActiveId] = useState<string | null>(null);
-    const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
     const mapRef = useRef<HTMLDivElement>(null);
 
     const sensors = useSensors(
@@ -54,7 +52,6 @@ export default function RoomView({ rooms, setRooms, isEditing }: { rooms: Room[]
         updateCurrentRoom({
             entities: currentRoom.entities.filter(e => e.id !== entityId)
         });
-        setSelectedEntityId(null);
     };
 
     // Drag handlers
@@ -91,16 +88,6 @@ export default function RoomView({ rooms, setRooms, isEditing }: { rooms: Room[]
         setActiveId(null);
     }
 
-    //Selected entity data
-
-    const selectedRoomEntity = selectedEntityId
-        ? currentRoom.entities.find(e => e.id === selectedEntityId)
-        : undefined;
-
-    const selectedEntityData = selectedEntityId
-        ? entitiesFromHook.find(e => e.entity_id === selectedEntityId)
-        : undefined;
-
     //Render
 
     return (
@@ -114,13 +101,16 @@ export default function RoomView({ rooms, setRooms, isEditing }: { rooms: Room[]
                 <DroppableMap id={currentRoom.name} ref={mapRef}>
                     <ImageDisplay image={currentRoom.image} changeImage={img => updateCurrentRoom({ image: img })} isEditing={isEditing} />
                     {currentRoom.entities.map(entity => (
-                        <DraggablePin
+                        <PinProvider
                             key={entity.id}
                             id={entity.id}
                             x={entity.x}
                             y={entity.y}
                             isEditing={isEditing}
-                            onTap={() => setSelectedEntityId(entity.id)}
+                            entityData={entitiesFromHook.find(e => e.entity_id === entity.id)}
+                            customName={entity.customName}
+                            onRename={(name) => updateEntity(entity.id, { customName: name })}
+                            onRemove={() => removeEntity(entity.id)}
                         />
                     ))}
                 </DroppableMap>
@@ -133,17 +123,6 @@ export default function RoomView({ rooms, setRooms, isEditing }: { rooms: Room[]
                 <WheelPalette
                     currentColor={currentRoom.bgColor}
                     onColorChange={color => updateCurrentRoom({ bgColor: color })}
-                />
-            )}
-
-            {selectedEntityId && selectedRoomEntity && (
-                <EntityCard
-                    entityId={selectedEntityId}
-                    customName={selectedRoomEntity.customName}
-                    entityData={selectedEntityData}
-                    onClose={() => setSelectedEntityId(null)}
-                    onRename={name => updateEntity(selectedEntityId, { customName: name })}
-                    onRemove={() => removeEntity(selectedEntityId)}
                 />
             )}
         </div>

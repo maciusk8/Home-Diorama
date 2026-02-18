@@ -63,7 +63,7 @@ export default function NavBar({ rooms, setRooms, isEditing, setEditing }:
                         {room.name}
                         <div
                             className='deleteName'
-                            style={{ marginLeft: '10px', cursor: 'pointer' }}
+                            style={{ marginLeft: '0.625rem', cursor: 'pointer' }}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 removeRoom(index);

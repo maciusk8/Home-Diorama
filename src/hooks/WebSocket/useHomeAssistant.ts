@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { HAContext } from '../providers/HomeAssistantProvider';
+import { HAContext } from '../../providers/HomeAssistantProvider';
 
 export function useHomeAssistant() {
     const context = useContext(HAContext);

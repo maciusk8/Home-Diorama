@@ -1,6 +1,6 @@
-import { useWebSocket } from './useWebSocket';
+import { useWebSocket } from '../WebSocket/useWebSocket';
 import { useState, useEffect } from 'react';
-import type { HAConnectionStatus } from '../types/protocol';
+import type { HAConnectionStatus } from '../../types/protocol';
 
 export function useAuth(haToken: string, url: string) {
     const { connectionStatus, lastMessage, error, sendMessage, reconnect } = useWebSocket(url);
