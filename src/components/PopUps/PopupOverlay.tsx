@@ -8,9 +8,7 @@ interface PopupOverlayProps {
 export default function PopupOverlay({ onClose, children }: PopupOverlayProps) {
     return (
         <div className="popup-overlay" onClick={onClose}>
-            <div className="popup-card" onClick={e => e.stopPropagation()}>
-                {children}
-            </div>
+            {children}
         </div>
     );
 }

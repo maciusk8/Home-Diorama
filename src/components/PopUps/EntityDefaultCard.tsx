@@ -6,8 +6,10 @@ export default function EntityDefaultCard({ entityId, customName, entityData, on
 
     return (
         <AbstractEntityCard onClose={onClose}>
-            <AbstractEntityCard.Header name={displayName} onClose={onClose} />
-            <AbstractEntityCard.State value={entityData?.state ?? 'unknown'} />
+            <AbstractEntityCard.Header name={displayName} />
+            <AbstractEntityCard.Body>
+                <AbstractEntityCard.State value={entityData?.state ?? 'unknown'} />
+            </AbstractEntityCard.Body>
             <AbstractEntityCard.Id value={entityId} />
         </AbstractEntityCard>
     );

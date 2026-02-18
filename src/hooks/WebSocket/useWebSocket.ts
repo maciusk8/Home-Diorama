@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import type { HAConnectionStatus } from '../types/protocol';
+import type { HAConnectionStatus } from '../../types/protocol';
 
 const MAX_RETRY_ATTEMPTS = 5;
 const BASE_RETRY_DELAY_MS = 1000;
@@ -33,7 +33,6 @@ export function useWebSocket(url: string) {
             try {
                 const message: Record<string, any> = JSON.parse(event.data);
                 setLastMessage(message);
-                console.log('Received:', event.data);
             } catch (e) {
                 setError("Failed to parse message: " + e);
                 console.error("Failed to parse message:", e, "Raw data:", event.data);

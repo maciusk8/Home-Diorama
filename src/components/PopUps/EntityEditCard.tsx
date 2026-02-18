@@ -39,9 +39,12 @@ export default function EntityEditCard({ entityId, customName, entityData, onClo
                 </div>
             )}
 
-            <AbstractEntityCard.State value={entityData?.state ?? 'unknown'} />
-            <button className="entity-card-remove" onClick={onRemove}>Usuń encję</button>
-            <AbstractEntityCard.Id value={entityId} />
+            <AbstractEntityCard.Body>
+                <AbstractEntityCard.State value={entityData?.state ?? 'unknown'} />
+            </AbstractEntityCard.Body>
+
+            <button className="entity-card-remove" onClick={onRemove}>Delete Entity</button>
+            <div className="entity-card-id-display">{entityId}</div>
         </AbstractEntityCard>
     );
 }
