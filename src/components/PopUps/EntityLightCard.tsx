@@ -19,41 +19,70 @@ export default function EntityLightCard({ entityId, customName, entityData, onCl
     const displayName = customName || entityData?.attributes.friendly_name || entityId;
     const { toggle, setBrightness, setColorTemp, setHsColor } = useLights();
 
-    // Extract state
-    const isOn = entityData?.state === 'on';
-    const brightness = entityData?.attributes.brightness || 0; // 0-255
+    // Optimistic state holder
+    const [optimisticValues, setOptimisticValues] = useState<{
+        isOn?: boolean;
+        brightness?: number;
+        hsColor?: [number, number];
+        colorTemp?: number;
+    }>({});
+
+    // Reset optimistic state when real update arrives for specific keys
+    useEffect(() => {
+        // Simple strategy: clear all optimistic values when any state update arrives from HA
+        // A more granular approach could be used if flickering occurs, but this usually suffices
+        setOptimisticValues({});
+    }, [entityData]);
+
+    // Extract state (Optimistic > Real > Default)
+    const isOn = optimisticValues.isOn !== undefined ? optimisticValues.isOn : (entityData?.state === 'on');
+
+    const rawBrightness = entityData?.attributes.brightness || 0;
+    const brightness = optimisticValues.brightness !== undefined ? optimisticValues.brightness : rawBrightness;
     const brightnessPct = Math.round((brightness / 255) * 100);
-    const hsColor = entityData?.attributes.hs_color; // [h, s]
-    const colorTemp = entityData?.attributes.color_temp_kelvin; // Kelvin
+
+    const hsColor = optimisticValues.hsColor !== undefined ? optimisticValues.hsColor : entityData?.attributes.hs_color;
+    const colorTemp = optimisticValues.colorTemp !== undefined ? optimisticValues.colorTemp : entityData?.attributes.color_temp_kelvin;
 
     const [mode, setMode] = useState<ControlMode>('brightness');
     const [timeAgo, setTimeAgo] = useState(getRelativeTime(entityData?.last_updated));
 
     useEffect(() => {
+        if (Object.keys(optimisticValues).length > 0) {
+            setTimeAgo('Just now');
+            return;
+        }
         setTimeAgo(getRelativeTime(entityData?.last_updated));
         const interval = setInterval(() => {
             setTimeAgo(getRelativeTime(entityData?.last_updated));
         }, 60000);
         return () => clearInterval(interval);
-    }, [entityData?.last_updated]);
+    }, [entityData?.last_updated, optimisticValues]);
 
     // Handlers
-    const handlePower = () => toggle(entityId);
+    const handlePower = () => {
+        setOptimisticValues(prev => ({ ...prev, isOn: !isOn }));
+        toggle(entityId);
+    };
 
     const handleBrightnessChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = Number(e.target.value);
         // Convert 0-100 to 0-255
         const haVal = Math.round((val / 100) * 255);
+
+        setOptimisticValues(prev => ({ ...prev, brightness: haVal }));
         setBrightness(entityId, haVal);
     };
 
     const handleColorChange = (hex: string) => {
         const hsva = hexToHsva(hex);
+        setOptimisticValues(prev => ({ ...prev, hsColor: [hsva.h, hsva.s] }));
         setHsColor(entityId, hsva.h, hsva.s);
     };
 
     const handleTempChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = Number(e.target.value);
+        setOptimisticValues(prev => ({ ...prev, colorTemp: val }));
         setColorTemp(entityId, val);
     };
 

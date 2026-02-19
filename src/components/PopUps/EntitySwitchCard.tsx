@@ -34,7 +34,7 @@ function DraggableThumb({ isOn }: { isOn: boolean }) {
         left: '50%',
         marginLeft: '-2.8125rem',
         width: '5.625rem',
-        height: '5.625rem', 
+        height: '5.625rem',
         backgroundColor: isOn ? '#ffffff' : '#46444b',
         borderRadius: '50%',
         boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
@@ -61,16 +61,28 @@ function DraggableThumb({ isOn }: { isOn: boolean }) {
 export default function EntitySwitchCard({ entityId, customName, entityData, onClose }: BaseEntityCardProps) {
     const displayName = customName || entityData?.attributes.friendly_name || entityId;
     const { toggle } = useSwitches();
-    const isOn = entityData?.state === 'on';
+    const [optimisticState, setOptimisticState] = useState<string | null>(null);
+    const currentState = optimisticState || entityData?.state;
+    const isOn = currentState === 'on';
+
+    // Reset optimistic state when real update arrives
+    useEffect(() => {
+        setOptimisticState(null);
+    }, [entityData?.state]);
+
     const [timeAgo, setTimeAgo] = useState(getRelativeTime(entityData?.last_updated));
 
     useEffect(() => {
+        if (optimisticState) {
+            setTimeAgo('Just now');
+            return;
+        }
         setTimeAgo(getRelativeTime(entityData?.last_updated));
         const interval = setInterval(() => {
             setTimeAgo(getRelativeTime(entityData?.last_updated));
         }, 60000);
         return () => clearInterval(interval);
-    }, [entityData?.last_updated]);
+    }, [entityData?.last_updated, optimisticState]);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -86,11 +98,14 @@ export default function EntitySwitchCard({ entityId, customName, entityData, onC
 
         if (Math.abs(delta.y) > threshold) {
             if (!isOn && delta.y < -threshold) { // Off -> Drag Up -> On
+                setOptimisticState('on');
                 toggle(entityId);
             } else if (isOn && delta.y > threshold) { // On -> Drag Down -> Off
+                setOptimisticState('off');
                 toggle(entityId);
             }
         } else if (Math.abs(delta.y) < 5) {
+            setOptimisticState(isOn ? 'off' : 'on');
             toggle(entityId);
         }
     };
@@ -112,15 +127,18 @@ export default function EntitySwitchCard({ entityId, customName, entityData, onC
                 >
                     <div className="big-switch-container">
                         <div
-                            onClick={() => toggle(entityId)}
+                            onClick={() => {
+                                setOptimisticState(isOn ? 'off' : 'on');
+                                toggle(entityId);
+                            }}
                             style={{
                                 cursor: 'pointer',
                                 width: '100%',
                                 height: '100%',
                                 borderRadius: '3.5rem',
-                                backgroundColor: isOn ? '#ffc107' : '#2b2930', 
+                                backgroundColor: isOn ? '#ffc107' : '#2b2930',
                                 transition: 'background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1)',
-                                position: 'relative' 
+                                position: 'relative'
                             }}
                         >
                             {/* Track only thumb is draggable overlay */}

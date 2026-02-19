@@ -41,6 +41,8 @@ export const HomeAssistantProvider: React.FC<HomeAssistantProviderProps> = ({ ha
         } else if (lastMessage.type === 'event' && lastMessage.event.event_type === 'state_changed') {
             const newState = lastMessage.event.data.new_state;
 
+
+
             setEntities(prev => prev.map(entity =>
                 entity.entity_id === newState.entity_id ? newState : entity
             ));

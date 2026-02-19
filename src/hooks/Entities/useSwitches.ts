@@ -1,8 +1,8 @@
-import {useHomeAssistant} from '../WebSocket/useHomeAssistant';
+import { useHomeAssistant } from '../WebSocket/useHomeAssistant';
 
 export default function useSwitches() {
     const { sendCommand } = useHomeAssistant();
-    
+
     const turnOn = (entityId: string) => {
         sendCommand({
             type: 'call_service',
@@ -19,7 +19,7 @@ export default function useSwitches() {
             target: { entity_id: entityId }
         });
     };
-    const toggle = (entityId: string) => {              
+    const toggle = (entityId: string) => {
         sendCommand({
             type: 'call_service',
             domain: 'switch',

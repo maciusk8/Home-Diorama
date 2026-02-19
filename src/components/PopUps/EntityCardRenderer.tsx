@@ -13,7 +13,7 @@ interface EntityCardProviderProps {
 
 import EntityLightCard from './EntityLightCard';
 
-export default function EntityCardProvider(props: EntityCardProviderProps) {
+export default function EntityCardRenderer(props: EntityCardProviderProps) {
     const { entityId, domain, ...baseProps } = props;
 
     switch (domain) {

@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
 import type { EntityState } from '../types/communication';
-import EntityCardProvider from './PopUps/EntityCardProvider';
 import { useLongPress, LongPressEventType } from 'use-long-press';
 import useSwitches from '../hooks/Entities/useSwitches';
 import { useLights } from '../hooks/Entities/useLights';
+import EntityCardRenderer from './PopUps/EntityCardRenderer';
 
 interface StaticPinProps {
     entityId: string;
@@ -66,7 +66,7 @@ export default function StaticPin({ entityId, x, y, entityData, customName }: St
                 }}
             />
             {isOpen && (
-                <EntityCardProvider
+                <EntityCardRenderer
                     entityId={entityId}
                     domain={domain}
                     customName={customName}
