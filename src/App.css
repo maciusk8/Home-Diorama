@@ -513,7 +513,7 @@ body {
   background-color: transparent;
 }
 
-.entity-card-remove {
+.entity-card-remove-btn {
   background-color: #b00020;
   color: white;
   border: none;
@@ -532,13 +532,42 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-.entity-card-remove:hover {
+.entity-card-remove-btn:hover {
   background-color: #d32f2f;
   transform: translateY(-1px);
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
 }
 
-.entity-card-remove:active {
+.entity-card-remove-btn:active {
+  transform: translateY(0);
+}
+
+.entity-card-area-btn {
+  background-color: #0c65eb;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  width: 100%;
+  max-width: 12.5rem;
+  margin: 2rem auto 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.entity-card-area-btn:hover {
+  background-color: #0d6efd;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+}
+
+.entity-card-area-btn:active {
   transform: translateY(0);
 }
 

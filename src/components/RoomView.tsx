@@ -9,11 +9,14 @@ import WheelPalette from './PopUps/WheelPalette';
 import { useEntities } from '../hooks/Entities/useEntities';
 import { DroppableMap } from './DnD/DopableMap';
 import RoomEntityPin from './RoomEntityPin';
+import { useRooms } from '../hooks/useRooms';
 
 
-export default function RoomView({ rooms, setRooms, isEditing }: { rooms: Room[], setRooms: (rooms: Room[]) => void, isEditing: boolean }) {
+
+export default function RoomView({ isEditing }: { isEditing: boolean }) {
     const { roomName } = useParams();
     const entitiesFromHook = useEntities();
+    const {rooms, setRooms, currentRoom, setCurrentRoom } = useRooms();
     const [activeId, setActiveId] = useState<string | null>(null);
     const mapRef = useRef<HTMLDivElement>(null);
 
@@ -23,7 +26,12 @@ export default function RoomView({ rooms, setRooms, isEditing }: { rooms: Room[]
         }),
     );
 
-    const currentRoom = rooms.find(room => room.name === roomName);
+   useEffect(() => {
+        const foundRoom = rooms.find(room => room.name === roomName);
+        
+        setCurrentRoom(foundRoom || null);
+        
+    }, [roomName, rooms, setCurrentRoom]); 
 
     useEffect(() => {
         document.body.style.backgroundColor = currentRoom?.bgColor || '';
