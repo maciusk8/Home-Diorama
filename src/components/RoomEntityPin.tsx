@@ -13,7 +13,7 @@ interface PinProviderProps {
     onRemove?: () => void;
 }
 
-export default function PinProvider({
+export default function RoomEntityPin({
     id,
     x,
     y,

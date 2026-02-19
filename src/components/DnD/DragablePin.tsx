@@ -1,6 +1,6 @@
 import { useDraggable } from '@dnd-kit/core';
-import { useLongPress, LongPressEventType } from 'use-long-press';
-import { useState, useRef } from 'react';
+
+import { useState } from 'react';
 import type { EntityState } from '../../types/communication';
 import EntityEditCard from '../PopUps/EntityEditCard';
 
@@ -22,26 +22,8 @@ export default function DraggablePin({ entityId, x, y, entityData, customName, o
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const isLongPress = useRef(false);
-
-  /* 
-   * Using 'as const' to ensure the string literal type is preserved for 'detect'.
-   * Merging handlers to ensure both dnd-kit and long-press logic works.
-   */
-  const bind = useLongPress(() => {
-    isLongPress.current = true;
-  }, {
-    onStart: () => { isLongPress.current = false; },
-    threshold: 200,
-    captureEvent: true,
-    cancelOnMovement: 5,
-    detect: LongPressEventType.Pointer,
-  });
-
-  const longPressHandlers = bind();
-
   const handleTap = () => {
-    if (!isDragging && !isLongPress.current) {
+    if (!isDragging) {
       setIsOpen(true);
     }
   };
@@ -50,24 +32,10 @@ export default function DraggablePin({ entityId, x, y, entityData, customName, o
     position: 'absolute',
     left: `${x}%`,
     top: `${y}%`,
-    transform: 'translate(-50%, -50%)',
     opacity: isDragging ? 0.4 : 1,
     cursor: 'grab',
     zIndex: isDragging ? 10 : 1,
     touchAction: 'none',
-  };
-
-  const mergedHandlers = {
-    ...listeners,
-    ...longPressHandlers,
-    onPointerDown: (e: React.PointerEvent) => {
-      listeners?.onPointerDown?.(e);
-      // Ensure long press handler is called if it exists
-      const longPressDown = (longPressHandlers as any).onPointerDown;
-      if (typeof longPressDown === 'function') {
-        longPressDown(e);
-      }
-    }
   };
 
   return (
@@ -77,7 +45,9 @@ export default function DraggablePin({ entityId, x, y, entityData, customName, o
         className="drag-pin"
         style={style}
         {...attributes}
-        {...mergedHandlers}
+        {...listeners}
+        {...attributes}
+        {...listeners}
         onClick={handleTap}
       />
       {isOpen && (

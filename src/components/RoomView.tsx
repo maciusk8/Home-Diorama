@@ -8,7 +8,8 @@ import EntityDropdown from './EntityDropdown';
 import WheelPalette from './PopUps/WheelPalette';
 import { useEntities } from '../hooks/Entities/useEntities';
 import { DroppableMap } from './DnD/DopableMap';
-import PinProvider from './PinProvider';
+import RoomEntityPin from './RoomEntityPin';
+
 
 export default function RoomView({ rooms, setRooms, isEditing }: { rooms: Room[], setRooms: (rooms: Room[]) => void, isEditing: boolean }) {
     const { roomName } = useParams();
@@ -18,8 +19,8 @@ export default function RoomView({ rooms, setRooms, isEditing }: { rooms: Room[]
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
-            activationConstraint: { delay: 200, tolerance: 5 },
-        })
+            activationConstraint: { distance: 5 },
+        }),
     );
 
     const currentRoom = rooms.find(room => room.name === roomName);
@@ -101,7 +102,7 @@ export default function RoomView({ rooms, setRooms, isEditing }: { rooms: Room[]
                 <DroppableMap id={currentRoom.name} ref={mapRef}>
                     <ImageDisplay image={currentRoom.image} changeImage={img => updateCurrentRoom({ image: img })} isEditing={isEditing} />
                     {currentRoom.entities.map(entity => (
-                        <PinProvider
+                        <RoomEntityPin
                             key={entity.id}
                             id={entity.id}
                             x={entity.x}
@@ -142,6 +143,7 @@ function calcDropPercent(active: DragEndEvent['active'], container: HTMLDivEleme
 
     return { x: xPercent, y: yPercent };
 }
+
 
 function clamp(value: number, min: number, max: number) {
     return Math.max(min, Math.min(max, value));
