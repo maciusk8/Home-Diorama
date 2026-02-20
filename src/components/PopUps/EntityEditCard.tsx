@@ -3,17 +3,16 @@ import Icon from '@mdi/react';
 import { mdiPencilOutline } from '@mdi/js';
 import AbstractEntityCard from './AbstractEntityCard';
 import { type EntityEditCardProps } from '../../types/EntityCard';
-import PopupOverlay from './PopupOverlay';
-import ImageDisplay from '../ImageDisplay';
 import { useRooms } from '../../hooks/useRooms';
+import ImageAreaSelector from '../ImageAreaSelector';
 
 export default function EntityEditCard({ entityId, customName, entityData, onClose, onRemove, onRename }: EntityEditCardProps) {
     const displayName = customName || entityData?.attributes.friendly_name || entityId;
     const [isEditing, setIsEditing] = useState(false);
     const [nameInput, setNameInput] = useState(displayName);
     const [isOpen, setIsOpen] = useState(false);
-    const {currentRoom} = useRooms();
-    
+    const { currentRoom } = useRooms();
+
     const handleSaveName = () => {
         const trimmed = nameInput.trim();
         if (trimmed && trimmed !== displayName) onRename(trimmed);
@@ -49,24 +48,16 @@ export default function EntityEditCard({ entityId, customName, entityData, onClo
                     <AbstractEntityCard.State value={entityData?.state ?? 'unknown'} />
                 </AbstractEntityCard.Body>
 
-                <button className="entity-card-area-btn" onClick={()=>{setIsOpen(true)}}>Set clik area</button>
+                <button className="entity-card-area-btn" onClick={() => { setIsOpen(true) }}>Set clik area</button>
 
                 <button className="entity-card-remove-btn" onClick={onRemove}>Delete Entity</button>
 
                 <div className="entity-card-id-display">{entityId}</div>
             </AbstractEntityCard>
 
-            {isOpen && (
-                <PopupOverlay onClose={() => setIsOpen(false)}>
-                    {currentRoom?.image && (
-                            <img
-                            src={currentRoom.image}
-                            alt="Room"
-                            className="image-display-img"
-                            />        
-                    )}    
-                </PopupOverlay>
-            )}   
+            {isOpen && currentRoom?.image != null && (
+                <ImageAreaSelector imageSrc={currentRoom.image} entityId={entityId} />
+            )}
         </>
     );
 }

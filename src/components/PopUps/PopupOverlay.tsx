@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 interface PopupOverlayProps {
-    onClose: () => void;
+    onClose?: () => void;
     children: ReactNode;
 }
 
