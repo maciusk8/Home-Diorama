@@ -56,7 +56,7 @@ export default function EntityEditCard({ entityId, customName, entityData, onClo
             </AbstractEntityCard>
 
             {isOpen && currentRoom?.image != null && (
-                <ImageAreaSelector imageSrc={currentRoom.image} entityId={entityId} />
+                <ImageAreaSelector imageSrc={currentRoom.image} entityId={entityId} onClose={() => setIsOpen(false)} />
             )}
         </>
     );

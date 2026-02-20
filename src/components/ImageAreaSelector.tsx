@@ -2,18 +2,18 @@ import { Button } from "react-bootstrap";
 import PopupOverlay from "./PopUps/PopupOverlay";
 import { DroppableMap } from "./DnD/DopableMap";
 import { useRef, useState } from "react";
-import { calcDropPercent } from "../utils/geometry"; 
+import { calcDropPercent, translateToString } from "../utils/geometry";
 import { useRooms } from "../hooks/useRooms";
 import { DndContext, type DragEndEvent, type DragStartEvent, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import DraggablePin from './DnD/DragablePin';
+import DraggableEntityPin from './DnD/DragableEntityPin';
 
-export default function ImageAreaSelector({ imageSrc, entityId }: { imageSrc: string, entityId: string }) {
+export default function ImageAreaSelector({ imageSrc, entityId, onClose }: { imageSrc: string, entityId: string, onClose: () => void }) {
     const mapRef = useRef<HTMLDivElement>(null);
     const { currentRoom, areaMap, setAreaMap } = useRooms();
     const [activeId, setActiveId] = useState<string | null>(null);
     const [activePopupIndex, setActivePopupIndex] = useState<number | null>(null);
-
-    const points = areaMap.get(entityId) ?? [];
+    const [value, setValue] = useState<[number, number][]>(areaMap.get(entityId) ?? []);
+    const [isSaved, setIsSaved] = useState(false);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -22,6 +22,8 @@ export default function ImageAreaSelector({ imageSrc, entityId }: { imageSrc: st
     );
 
     const handleClick = (e: React.PointerEvent<HTMLDivElement>) => {
+        setIsSaved(false);
+
         if (activePopupIndex !== null) {
             setActivePopupIndex(null);
             return;
@@ -37,16 +39,16 @@ export default function ImageAreaSelector({ imageSrc, entityId }: { imageSrc: st
         if (!result) return;
         const { x, y } = result;
         const point: [number, number] = [x, y];
-        const newMap = new Map(areaMap);
-        newMap.set(entityId, [...points, point]);
-        setAreaMap(newMap);
+        setValue([...value, point]);
     }
 
     const handleDragStart = (event: DragStartEvent) => {
+        setIsSaved(false);
         setActiveId(String(event.active.id));
     };
 
     const handleDragEnd = (event: DragEndEvent) => {
+        setIsSaved(false);
         if (!mapRef.current || !currentRoom) return;
         const { active, over } = event;
 
@@ -58,23 +60,26 @@ export default function ImageAreaSelector({ imageSrc, entityId }: { imageSrc: st
             if (pinIdStr.startsWith('pin-area-point-')) {
                 const index = parseInt(pinIdStr.replace('pin-area-point-', ''), 10);
                 if (!isNaN(index)) {
-                    const newPoints = [...points];
-                    newPoints[index] = [dropPosition.x, dropPosition.y];
-                    const newMap = new Map(areaMap);
-                    newMap.set(entityId, newPoints);
-                    setAreaMap(newMap);
+                    const newValue = [...value];
+                    newValue[index] = [dropPosition.x, dropPosition.y];
+                    setValue(newValue);
                 }
+
             }
         }
         setActiveId(null);
     };
 
     const handleRemovePoint = (indexToRemove: number) => {
-        const newPoints = points.filter((_, idx) => idx !== indexToRemove);
-        const newMap = new Map(areaMap);
-        newMap.set(entityId, newPoints);
-        setAreaMap(newMap);
+        setIsSaved(false);
+        const newValue = value.filter((_, idx) => idx !== indexToRemove);
+        setValue(newValue);
         setActivePopupIndex(null);
+    };
+
+    const handleSave = () => {
+        setAreaMap(new Map(areaMap).set(entityId, value));
+        setIsSaved(true);
     };
 
     return (
@@ -97,9 +102,8 @@ export default function ImageAreaSelector({ imageSrc, entityId }: { imageSrc: st
                                 onPointerDown={handleClick}
                             />
 
-                            {/* Renderowanie kropek jako DraggablePin */}
-                            {points.map((point, index) => (
-                                <DraggablePin
+                            {value.map((point, index) => (
+                                <DraggableEntityPin
                                     key={`area-point-${index}`}
                                     entityId={`area-point-${index}`}
                                     x={point[0]}
@@ -112,6 +116,29 @@ export default function ImageAreaSelector({ imageSrc, entityId }: { imageSrc: st
                                     onRemove={() => handleRemovePoint(index)}
                                 />
                             ))}
+
+                            <svg
+                                viewBox="0 0 100 100"
+                                preserveAspectRatio="none"
+                                style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    width: '100%',
+                                    height: '100%',
+                                    pointerEvents: 'none',
+                                    zIndex: 1
+                                }}
+                            >
+                                <polygon points={translateToString(value)}
+                                    vectorEffect="non-scaling-stroke"
+                                    style={{
+                                        fill: 'rgba(13, 110, 253, 0.2)',
+                                        stroke: '#0d6efd',
+                                        strokeWidth: '2px',
+                                    }}
+                                />
+                            </svg>
                         </DroppableMap>
                     </div>
                     <DragOverlay dropAnimation={null}>
@@ -133,8 +160,10 @@ export default function ImageAreaSelector({ imageSrc, entityId }: { imageSrc: st
                 </DndContext>
 
                 <div className="d-flex justify-content-end gap-3 mt-3 w-100">
-                    <Button variant="secondary" onClick={() => console.log("Close")}>Close</Button>
-                    <Button variant="primary" onClick={() => console.log("Save")}>Save</Button>
+                    <Button variant="secondary" onClick={onClose}>Close</Button>
+                    <Button variant={isSaved ? "success" : "primary"} onClick={handleSave}>
+                        {isSaved ? "Saved!" : "Save"}
+                    </Button>
                 </div>
             </div>
         </PopupOverlay>

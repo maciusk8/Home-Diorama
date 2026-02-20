@@ -1,6 +1,6 @@
 import type { EntityState } from '../types/communication';
-import DraggablePin from './DnD/DragablePin';
-import StaticPin from './StaticPin';
+import DraggableEntityPin from './DnD/DragableEntityPin';
+import StaticEntityPin from './StaticEntityPin';
 
 interface PinProviderProps {
     id: string;
@@ -26,7 +26,7 @@ export default function RoomEntityPin({
     return (
         <>
             {isEditing ? (
-                <DraggablePin
+                <DraggableEntityPin
                     entityId={id}
                     x={x}
                     y={y}
@@ -36,7 +36,7 @@ export default function RoomEntityPin({
                     onRemove={onRemove}
                 />
             ) : (
-                <StaticPin
+                <StaticEntityPin
                     entityId={id}
                     x={x}
                     y={y}

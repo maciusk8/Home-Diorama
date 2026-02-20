@@ -25,6 +25,9 @@ export function calcDropPercent(input: PositionInput, container: HTMLDivElement)
 
     return { x: xPercent, y: yPercent };
 }
+export function translateToString(input: [number, number][]) {
+    return input.map(point => `${point[0]},${point[1]}`).join(' ');
+}
 
 function clamp(value: number, min: number, max: number) {
     return Math.max(min, Math.min(max, value));

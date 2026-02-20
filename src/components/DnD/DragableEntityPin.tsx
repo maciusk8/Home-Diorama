@@ -6,7 +6,7 @@ import EntityEditCard from '../PopUps/EntityEditCard';
 import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
 
-interface DraggablePinProps {
+interface DraggableEntityPinProps {
   entityId: string;
   x: number;
   y: number;
@@ -21,10 +21,10 @@ interface DraggablePinProps {
   onClose?: () => void;
 }
 
-export default function DraggablePin({
+export default function DraggableEntityPin({
   entityId, x, y, entityData, customName, onRename, onRemove, type = 'entity',
   disabled = false, isOpen: controlledIsOpen, onOpen, onClose
-}: DraggablePinProps) {
+}: DraggableEntityPinProps) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `pin-${entityId}`,
     data: { type: 'pin', entityId: entityId, pinType: type },
