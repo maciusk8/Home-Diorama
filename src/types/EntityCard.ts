@@ -12,6 +12,4 @@ export interface EntityEditCardProps extends BaseEntityCardProps {
     onRename: (newName: string) => void;
 }
 
-// Re-exporting EntityCardProviderProps if needed by consumer, checks if it was exported before.
-// Actually EntityCardProviderProps was defined in the provider file.
-// Let's check what was in provider.
+

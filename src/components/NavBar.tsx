@@ -1,6 +1,7 @@
 import { Nav, Button } from 'react-bootstrap';
 import type { Room } from '../types/rooms';
 import { NavLink } from 'react-router-dom';
+import { useRooms } from '../hooks/useRooms';
 
 const messages: string[] = [
     "Enter room name:",
@@ -11,9 +12,10 @@ const inputMessage = messages[0];
 const errorMessage = messages[1];
 
 
-export default function NavBar({ rooms, setRooms, isEditing, setEditing }:
-    { rooms: Room[]; setRooms: React.Dispatch<React.SetStateAction<Room[]>>; isEditing: boolean; setEditing: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function NavBar({ isEditing, setEditing }:
+    { isEditing: boolean; setEditing: React.Dispatch<React.SetStateAction<boolean>> }) {
 
+    const { rooms, setRooms } = useRooms();
     const addRoom = () => {
         const name = prompt(inputMessage);
         if (name && ensureUniqueNames(name, -1)) {

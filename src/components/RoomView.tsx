@@ -9,21 +9,30 @@ import WheelPalette from './PopUps/WheelPalette';
 import { useEntities } from '../hooks/Entities/useEntities';
 import { DroppableMap } from './DnD/DopableMap';
 import RoomEntityPin from './RoomEntityPin';
+import { useRooms } from '../hooks/useRooms';
+import { calcDropPercent } from '../utils/geometry';
 
 
-export default function RoomView({ rooms, setRooms, isEditing }: { rooms: Room[], setRooms: (rooms: Room[]) => void, isEditing: boolean }) {
+export default function RoomView({ isEditing }: { isEditing: boolean }) {
+    
     const { roomName } = useParams();
     const entitiesFromHook = useEntities();
+    const {rooms, setRooms, currentRoom, setCurrentRoom } = useRooms();
     const [activeId, setActiveId] = useState<string | null>(null);
     const mapRef = useRef<HTMLDivElement>(null);
-
+    
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: { distance: 5 },
         }),
     );
-
-    const currentRoom = rooms.find(room => room.name === roomName);
+    
+   useEffect(() => {
+        const foundRoom = rooms.find(room => room.name === roomName);
+        
+        setCurrentRoom(foundRoom || null);
+        
+    }, [roomName, rooms, setCurrentRoom]); 
 
     useEffect(() => {
         document.body.style.backgroundColor = currentRoom?.bgColor || '';
@@ -130,21 +139,4 @@ export default function RoomView({ rooms, setRooms, isEditing }: { rooms: Room[]
     );
 }
 
-//Utils
 
-function calcDropPercent(active: DragEndEvent['active'], container: HTMLDivElement) {
-    const containerRect = container.getBoundingClientRect();
-    const draggedRect = active.rect.current.translated;
-
-    if (!draggedRect) return null;
-
-    const xPercent = clamp(((draggedRect.left - containerRect.left) / containerRect.width) * 100, 0, 100);
-    const yPercent = clamp(((draggedRect.top - containerRect.top) / containerRect.height) * 100, 0, 100);
-
-    return { x: xPercent, y: yPercent };
-}
-
-
-function clamp(value: number, min: number, max: number) {
-    return Math.max(min, Math.min(max, value));
-}
