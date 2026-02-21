@@ -1,0 +1,59 @@
+.image-area-selector-container {
+  position: relative;
+  color: #e2e2e2;
+  background-color: #17181a;
+  padding: 1rem;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  width: fit-content;
+  max-width: 95vw;
+  max-height: 95vh;
+}
+
+.image-area-selector-container-inner {
+    align-items: center;
+}
+
+.image-area-selector-relative-box {
+    position: relative;
+    display: inline-block;
+}
+
+.image-area-selector-img {
+    max-width: 100%;
+    max-height: calc(95vh - 8rem);
+    display: block;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.image-area-selector-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.image-area-selector-polygon {
+    fill: rgba(13, 110, 253, 0.2);
+    stroke: #0d6efd;
+    stroke-width: 2px;
+}
+
+.image-area-selector-drag-dot {
+    width: 12px;
+    height: 12px;
+    background-color: #0d6efd;
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(0,0,0,0.5);
+    opacity: 0.8;
+}
+
+.image-area-selector-drag-pin-translate {
+    transform: translate(-50%, -50%);
+}
