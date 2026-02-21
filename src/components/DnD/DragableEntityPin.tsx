@@ -97,7 +97,7 @@ export default function DraggableEntityPin({
           onRemove={onRemove || (() => { })}
         />
       )}
-      {isOpen && type === 'area_point' && (
+      {isOpen && type === 'area_point' && onRemove && (
         <div style={{
           position: 'fixed',
           top: `${clickPos.y}px`,

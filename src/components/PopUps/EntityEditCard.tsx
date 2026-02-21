@@ -5,12 +5,15 @@ import AbstractEntityCard from './AbstractEntityCard';
 import { type EntityEditCardProps } from '../../types/EntityCard';
 import { useRooms } from '../../hooks/useRooms';
 import ImageAreaSelector from '../ImageAreaSelector';
+import LightEditor from '../LightEditor';
 
 export default function EntityEditCard({ entityId, customName, entityData, onClose, onRemove, onRename }: EntityEditCardProps) {
     const displayName = customName || entityData?.attributes.friendly_name || entityId;
     const [isEditing, setIsEditing] = useState(false);
     const [nameInput, setNameInput] = useState(displayName);
     const [isOpen, setIsOpen] = useState(false);
+    const [isLightOpen, setIsLightOpen] = useState(false);
+    const isLight = entityId.startsWith('light.');
     const { currentRoom } = useRooms();
 
     const handleSaveName = () => {
@@ -49,6 +52,15 @@ export default function EntityEditCard({ entityId, customName, entityData, onClo
                 </AbstractEntityCard.Body>
 
                 <button className="entity-card-area-btn" onClick={() => { setIsOpen(true) }}>Set clik area</button>
+                {isLight && (
+                    <button
+                        className="entity-card-area-btn"
+                        onClick={() => { setIsLightOpen(true) }}
+                        style={{ marginTop: '8px', backgroundColor: '#eeb020', color: '#111', whiteSpace: 'normal', height: 'auto', padding: '10px 5px', lineHeight: '1.2' }}
+                    >
+                        Design Light Overlay
+                    </button>
+                )}
 
                 <button className="entity-card-remove-btn" onClick={onRemove}>Delete Entity</button>
 
@@ -57,6 +69,9 @@ export default function EntityEditCard({ entityId, customName, entityData, onClo
 
             {isOpen && currentRoom?.image != null && (
                 <ImageAreaSelector imageSrc={currentRoom.image} entityId={entityId} onClose={() => setIsOpen(false)} />
+            )}
+            {isLightOpen && currentRoom?.image != null && (
+                <LightEditor imageSrc={currentRoom.image} entityId={entityId} entityData={entityData} onClose={() => setIsLightOpen(false)} />
             )}
         </>
     );

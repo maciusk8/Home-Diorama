@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import AbstractEntityCard from './AbstractEntityCard';
 import { type BaseEntityCardProps } from '../../types/EntityCard';
+import useSwitches from '../../hooks/Entities/useSwitches';
 import { useLights } from '../../hooks/Entities/useLights';
 import { getRelativeTime } from '../../utils/time';
 import { hexToHsva, hsvaToHex } from '@uiw/color-convert';
@@ -17,7 +18,8 @@ type ControlMode = 'brightness' | 'color' | 'temp';
 
 export default function EntityLightCard({ entityId, customName, entityData, onClose }: BaseEntityCardProps) {
     const displayName = customName || entityData?.attributes.friendly_name || entityId;
-    const { toggle, setBrightness, setColorTemp, setHsColor } = useLights();
+    const { toggle } = useSwitches();
+    const { setBrightness, setColorTemp, setHsColor } = useLights();
 
     // Optimistic state holder
     const [optimisticValues, setOptimisticValues] = useState<{

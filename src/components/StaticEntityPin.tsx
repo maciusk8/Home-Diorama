@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import type { EntityState } from '../types/communication';
 import { useLongPress, LongPressEventType } from 'use-long-press';
 import useSwitches from '../hooks/Entities/useSwitches';
-import { useLights } from '../hooks/Entities/useLights';
 import EntityCardRenderer from './PopUps/EntityCardRenderer';
 import { useRooms } from '../hooks/useRooms';
 import { translateToString } from '../utils/geometry';
@@ -17,8 +16,7 @@ interface StaticPinProps {
 
 export default function StaticEntityPin({ entityId, x, y, entityData, customName }: StaticPinProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const { toggle: toggleSwitch } = useSwitches();
-    const { toggle: toggleLight } = useLights();
+    const { toggle } = useSwitches();
     const { areaMap } = useRooms();
     const isLongPress = useRef(false);
 
@@ -50,10 +48,8 @@ export default function StaticEntityPin({ entityId, x, y, entityData, customName
 
         switch (domain) {
             case 'switch':
-                toggleSwitch(entityId);
-                break;
             case 'light':
-                toggleLight(entityId);
+                toggle(entityId);
                 break;
             default:
                 setIsOpen(true);

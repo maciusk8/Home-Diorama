@@ -5,30 +5,6 @@ export function useLights() {
 
     const lights = entities.filter(e => e.entity_id.startsWith('light.'));
 
-    const turnOn = (entityId: string) => {
-        sendCommand({
-            type: 'call_service',
-            domain: 'light',
-            service: 'turn_on',
-            target: { entity_id: entityId }
-        });
-    };
-    const turnOff = (entityId: string) => {
-        sendCommand({
-            type: 'call_service',
-            domain: 'light',
-            service: 'turn_off',
-            target: { entity_id: entityId }
-        });
-    };
-    const toggle = (entityId: string) => {
-        sendCommand({
-            type: 'call_service',
-            domain: 'light',
-            service: 'toggle',
-            target: { entity_id: entityId }
-        });
-    };
     const setBrightness = (entityId: string, brightness: number) => {
         sendCommand({
             type: 'call_service',
@@ -38,6 +14,7 @@ export function useLights() {
             service_data: { brightness }
         });
     };
+
     const setColor = (entityId: string, color: string) => {
         sendCommand({
             type: 'call_service',
@@ -68,5 +45,5 @@ export function useLights() {
         });
     }
 
-    return { lights, turnOn, turnOff, toggle, setBrightness, setColor, setHsColor, setColorTemp };
+    return { lights, setBrightness, setColor, setHsColor, setColorTemp };
 }
