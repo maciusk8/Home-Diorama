@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import ColorControl from '@/shared/components/ColorControl';
+import './LightControls.css';
 
 type ControlMode = 'brightness' | 'color' | 'temp';
 
@@ -23,19 +24,18 @@ export default function LightControls({
     brightnessPct,
     currentColorHex,
     currentTemp,
-    tempPct, 
     minTemp,
     maxTemp,
     onBrightnessChange,
     onColorChange,
     onTempChange
 }: LightControlsProps) {
-   
+
     const [localBrightness, setLocalBrightness] = useState(brightnessPct);
     const [localTemp, setLocalTemp] = useState(currentTemp);
     const [isDragging, setIsDragging] = useState(false);
 
-   
+
     useEffect(() => {
         if (!isDragging) {
             setLocalBrightness(brightnessPct);
@@ -53,9 +53,8 @@ export default function LightControls({
         setLocalBrightness(Number(e.target.value));
     };
 
-    const handleBrightnessCommit = (e: React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>) => {
+    const handleBrightnessCommit = () => {
         setIsDragging(false);
-        const target = e.currentTarget as HTMLInputElement;
         const syntheticEvent = {
             target: { value: localBrightness.toString() }
         } as React.ChangeEvent<HTMLInputElement>;
@@ -84,8 +83,8 @@ export default function LightControls({
                     <div className="slider-container brightness-slider">
 
                         <div
-                            className="temp-value-bubble"
-                            style={{ bottom: `${localBrightness}%`, transform: 'translateY(50%)' }}
+                            className="temp-value-bubble temp-value-bubble-translate"
+                            style={{ bottom: `${localBrightness}%` }}
                         >
                             {localBrightness}%
                         </div>
@@ -107,14 +106,9 @@ export default function LightControls({
                             onTouchEnd={handleBrightnessCommit}
                             className="slider-input"
                         />
-                        {/* Handle moves with the fill */}
                         <div
-                            className="slider-handle"
-                            style={{
-                                bottom: `${localBrightness}%`,
-                                transform: 'translate(-50%, 50%)', 
-                                marginBottom: '-2px' 
-                            }}
+                            className="slider-handle slider-handle-translate"
+                            style={{ bottom: `${localBrightness}%` }}
                         />
                     </div>
                 </div>

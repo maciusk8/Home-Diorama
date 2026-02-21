@@ -5,6 +5,7 @@ import { mdiPalette } from '@mdi/js';
 import type { HsvaColor } from '@uiw/color-convert';
 import PopupOverlay from '@/shared/components/PopupOverlay';
 import ColorControl from '@/shared/components/ColorControl';
+import './WheelPalette.css';
 
 interface WheelPaletteProps {
     currentColor?: string;

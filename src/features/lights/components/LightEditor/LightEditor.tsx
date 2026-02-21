@@ -4,6 +4,7 @@ import { useRooms } from "@/features/rooms/hooks/useRooms";
 import type { LightConfig } from "@/features/rooms/types/rooms";
 import LightEditorPreview from "@/features/lights/components/LightEditor/LightEditorPreview";
 import LightEditorControls from "@/features/lights/components/LightEditor/LightEditorControls";
+import './LightEditor.css';
 
 export default function LightEditor({ imageSrc, entityId, entityData, onClose }: { imageSrc: string, entityId: string, entityData?: any, onClose: () => void }) {
     const { currentRoom, lightMap, setLightMap } = useRooms();

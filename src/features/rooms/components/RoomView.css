@@ -1,0 +1,55 @@
+.roomView {
+  display: flex;
+  width: 100%;
+  height: 95vh;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.entity-sidebar {
+  width: 18.75rem;
+  min-width: 18.75rem;
+  flex-shrink: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-right: 0.0625rem solid #ddd;
+  padding: 0.625rem;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  color: #213547;
+}
+
+
+.entity-list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+
+.entity-list-filter {
+  margin-bottom: 0.5rem;
+}
+
+
+.entity-list-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+
+.entity-list-item {
+  padding: 0.375rem 0.5rem;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

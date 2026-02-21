@@ -1,0 +1,125 @@
+.light-editor-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content;
+  max-width: 95vw;
+  justify-content: center;
+}
+
+
+.light-editor-content-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: #18181b;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+
+.light-editor-preview-dnd {
+  display: flex;
+  flex: 1 1 auto;
+  position: relative;
+  background-color: #000;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.light-editor-preview-img-container {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
+
+
+.light-editor-preview-img {
+  max-width: 100vw;
+  max-height: calc(90vh - 120px);
+  display: block;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+
+.light-center-drag-pin {
+  width: 12px;
+  height: 12px;
+  background-color: #0d6efd;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(13, 110, 253, 0.8);
+  opacity: 0.8;
+}
+
+
+.light-editor-controls-wrapper {
+  padding: 16px;
+  background: #27272a;
+  border-top: 1px solid #3f3f46;
+  width: 100%;
+}
+
+
+.light-editor-controls-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+.light-editor-controls-left {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+
+.light-editor-controls-dropdown-toggle {
+  font-weight: 500 !important;
+  background-color: #18181b !important;
+  border: 1px solid #3f3f46 !important;
+}
+
+
+.light-editor-controls-center {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+}
+
+
+.light-editor-slider-wrapper {
+  flex: 1 1 100px;
+  min-width: 100px;
+}
+
+
+.light-editor-slider-label {
+  font-size: 0.7rem;
+}
+
+
+.light-editor-controls-right {
+  display: flex;
+  gap: 8px;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+
+.light-editor-controls-btn-close {
+  background-color: #52525b !important;
+  border: none !important;
+}
+
+
+.light-editor-controls-btn-save {
+  min-width: 70px;
+  font-weight: 500;
+}

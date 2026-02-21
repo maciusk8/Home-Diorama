@@ -1,0 +1,87 @@
+.nav-zone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 2000;
+  pointer-events: none;
+}
+
+
+.nav-zone .nav {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  pointer-events: auto;
+  position: relative;
+  z-index: 2002;
+  width: fit-content;
+  margin: 0;
+  padding: 0;
+  flex-wrap: nowrap;
+  border-bottom-left-radius: 0.625rem;
+  border-bottom-right-radius: 0.625rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+
+.nav-autohide .nav-zone .nav {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  background: transparent;
+  backdrop-filter: blur(20px);
+  border-bottom: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+
+.nav-autohide .nav-zone:hover .nav {
+  max-height: 4rem;
+}
+
+
+.nav-autohide .nav-zone::before {
+  content: '';
+  display: block;
+  height: 2rem;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2001;
+  pointer-events: auto;
+}
+
+
+.nav {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+  flex-shrink: 0;
+  border-bottom: 0px;
+}
+
+
+.nav .nav-link {
+  text-shadow:
+    -1px -1px 0 #fff,
+    1px -1px 0 #fff,
+    -1px 1px 0 #fff,
+    1px 1px 0 #fff,
+    0 2px 4px rgba(0, 0, 0, 0.3);
+  font-weight: 500;
+}
+
+.deleteName {
+  margin-left: 0.625rem;
+  cursor: pointer;
+}
+
+.nav-item-right {
+  margin-left: auto;
+  scale: 0.75;
+}

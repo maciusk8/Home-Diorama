@@ -2,6 +2,7 @@ import { Nav, Button } from 'react-bootstrap';
 import type { Room } from '@/features/rooms/types/rooms';
 import { NavLink } from 'react-router-dom';
 import { useRooms } from '@/features/rooms/hooks/useRooms';
+import './NavBar.css';
 
 const messages: string[] = [
     "Enter room name:",
@@ -64,8 +65,7 @@ export default function NavBar({ isEditing, setEditing }:
                     >
                         {room.name}
                         <div
-                            className='deleteName'
-                            style={{ marginLeft: '0.625rem', cursor: 'pointer' }}
+                            className='deleteName nav-item-right'
                             onClick={(e) => {
                                 e.stopPropagation();
                                 removeRoom(index);
@@ -80,7 +80,7 @@ export default function NavBar({ isEditing, setEditing }:
                 <Nav.Link onClick={() => addRoom()}>+</Nav.Link>
             </Nav.Item>
 
-            <Nav.Item style={{ marginLeft: 'auto', scale: 0.75 }}>
+            <Nav.Item className="nav-item-right">
                 <Button onClick={() => setEditing(false)}>done</Button>
             </Nav.Item>
         </Nav>
@@ -95,7 +95,7 @@ export default function NavBar({ isEditing, setEditing }:
                 </Nav.Item>
             ))}
 
-            <Nav.Item style={{ marginLeft: 'auto', scale: 0.75 }}>
+            <Nav.Item className="nav-item-right">
                 <Button onClick={() => setEditing(true)}>edit</Button>
             </Nav.Item>
         </Nav>

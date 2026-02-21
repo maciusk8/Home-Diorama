@@ -1,0 +1,37 @@
+.drag-pin {
+  width: clamp(10px, 1.2vw, 20px);
+  height: clamp(10px, 1.2vw, 20px);
+  background-color: #0d6efd;
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  cursor: grab;
+}
+
+
+.pin {
+  width: clamp(10px, 1.2vw, 20px);
+  height: clamp(10px, 1.2vw, 20px);
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.sidebar-draggable-item {
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-drag-handle {
+  cursor: grab;
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  color: #bbb;
+  transition: color 0.2s;
+}
+
+.sidebar-drag-handle:hover {
+  color: #555;
+}

@@ -5,6 +5,7 @@ import useSwitches from '@/features/entities/hooks/useSwitches';
 import EntityCardRenderer from '@/features/entities/components/EntityCardRenderer';
 import { useRooms } from '@/features/rooms/hooks/useRooms';
 import { translateToString } from '@/shared/utils/geometry';
+import '@/features/dnd/components/DragPin.css';
 
 interface StaticPinProps {
     entityId: string;

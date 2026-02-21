@@ -6,6 +6,7 @@ import { calcDropPercent, translateToString } from "@/shared/utils/geometry";
 import { useRooms } from "@/features/rooms/hooks/useRooms";
 import { DndContext, type DragEndEvent, type DragStartEvent, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import DraggableEntityPin from '@/features/dnd/components/DraggableEntityPin';
+import './ImageAreaSelector.css';
 
 export default function ImageAreaSelector({ imageSrc, entityId, onClose }: { imageSrc: string, entityId: string, onClose: () => void }) {
     const mapRef = useRef<HTMLDivElement>(null);
@@ -84,21 +85,15 @@ export default function ImageAreaSelector({ imageSrc, entityId, onClose }: { ima
 
     return (
         <PopupOverlay>
-            <div className="image-area-selector-container m-auto" style={{ alignItems: 'center' }}>
+            <div className="image-area-selector-container m-auto image-area-selector-container-inner">
                 <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-                    <div style={{ position: 'relative', display: 'inline-block' }}>
+                    <div className="image-area-selector-relative-box">
                         <DroppableMap id={currentRoom!.name} ref={mapRef}>
                             <img
                                 src={imageSrc}
                                 alt="Room"
                                 draggable="false"
-                                style={{
-                                    maxWidth: '100%',
-                                    maxHeight: 'calc(95vh - 8rem)',
-                                    display: 'block',
-                                    userSelect: 'none',
-                                    WebkitUserSelect: 'none'
-                                }}
+                                className="image-area-selector-img"
                                 onPointerDown={handleClick}
                             />
 
@@ -120,23 +115,11 @@ export default function ImageAreaSelector({ imageSrc, entityId, onClose }: { ima
                             <svg
                                 viewBox="0 0 100 100"
                                 preserveAspectRatio="none"
-                                style={{
-                                    position: 'absolute',
-                                    top: 0,
-                                    left: 0,
-                                    width: '100%',
-                                    height: '100%',
-                                    pointerEvents: 'none',
-                                    zIndex: 1
-                                }}
+                                className="image-area-selector-svg"
                             >
                                 <polygon points={translateToString(value)}
                                     vectorEffect="non-scaling-stroke"
-                                    style={{
-                                        fill: 'rgba(13, 110, 253, 0.2)',
-                                        stroke: '#0d6efd',
-                                        strokeWidth: '2px',
-                                    }}
+                                    className="image-area-selector-polygon"
                                 />
                             </svg>
                         </DroppableMap>
@@ -144,16 +127,9 @@ export default function ImageAreaSelector({ imageSrc, entityId, onClose }: { ima
                     <DragOverlay dropAnimation={null}>
                         {activeId ? (
                             activeId.startsWith('pin-area-point-') ? (
-                                <div style={{
-                                    width: '12px',
-                                    height: '12px',
-                                    backgroundColor: '#0d6efd',
-                                    borderRadius: '50%',
-                                    boxShadow: '0 0 4px rgba(0,0,0,0.5)',
-                                    opacity: 0.8
-                                }} />
+                                <div className="image-area-selector-drag-dot" />
                             ) : (
-                                <div className="drag-pin" style={{ transform: 'translate(-50%, -50%)' }} />
+                                <div className="drag-pin image-area-selector-drag-pin-translate" />
                             )
                         ) : null}
                     </DragOverlay>

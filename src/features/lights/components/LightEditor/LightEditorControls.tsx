@@ -2,6 +2,7 @@ import { Button, Form, Dropdown } from "react-bootstrap";
 import Icon from '@mdi/react';
 import { mdiTrashCanOutline, mdiPlus } from '@mdi/js';
 import type { LightConfig } from "@/features/rooms/types/rooms";
+import './LightEditor.css';
 
 interface LightEditorControlsProps {
     configs: LightConfig[];

@@ -1,0 +1,48 @@
+.image-display-container {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+}
+
+
+.image-display-editing {
+  cursor: pointer;
+}
+
+
+.image-display-img {
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+
+
+.image-display-placeholder {
+  height: 90vh;
+  width: 40vw;
+  border: 0.125rem dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  background-color: transparent;
+  margin: auto;
+}
+
+
+.image-display-drag-active {
+  background-color: #f8f8f8;
+}
+
+
+.image-display-text {
+  color: #666;
+  font-size: 1.2rem;
+}

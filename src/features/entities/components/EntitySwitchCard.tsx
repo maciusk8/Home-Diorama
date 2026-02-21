@@ -7,6 +7,7 @@ import { mdiPower } from '@mdi/js';
 import { getRelativeTime } from '@/shared/utils/time';
 import { DndContext, useDraggable, useSensor, useSensors, PointerSensor, type DragEndEvent } from '@dnd-kit/core';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
+import './EntityCard.css';
 
 //vibe coded, needs refactor and cleanup, but works and look good enough for now.
 
@@ -131,15 +132,7 @@ export default function EntitySwitchCard({ entityId, customName, entityData, onC
                                 setOptimisticState(isOn ? 'off' : 'on');
                                 toggle(entityId);
                             }}
-                            style={{
-                                cursor: 'pointer',
-                                width: '100%',
-                                height: '100%',
-                                borderRadius: '3.5rem',
-                                backgroundColor: isOn ? '#ffc107' : '#2b2930',
-                                transition: 'background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1)',
-                                position: 'relative'
-                            }}
+                            className="entity-switch-card-custom-slider"
                         >
                             {/* Track only thumb is draggable overlay */}
                         </div>

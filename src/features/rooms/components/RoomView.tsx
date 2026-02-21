@@ -12,6 +12,7 @@ import RoomEntityPin from '@/features/rooms/components/RoomEntityPin';
 import { useRooms } from '@/features/rooms/hooks/useRooms';
 import { calcDropPercent } from '@/shared/utils/geometry';
 import { getLightStyle } from '@/features/lights/utils/lightUtils';
+import './RoomView.css';
 
 
 export default function RoomView({ isEditing }: { isEditing: boolean }) {

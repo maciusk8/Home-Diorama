@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
 import PopupOverlay from '@/shared/components/PopupOverlay';
+import './EntityCard.css';
 
 function Header({ name }: { name: string }) {
     return (

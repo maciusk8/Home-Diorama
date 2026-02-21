@@ -6,6 +6,7 @@ import { type EntityEditCardProps } from '@/shared/types/EntityCard';
 import { useRooms } from '@/features/rooms/hooks/useRooms';
 import ImageAreaSelector from '@/features/rooms/components/ImageAreaSelector';
 import LightEditor from '@/features/lights/components/LightEditor/LightEditor';
+import './EntityCard.css';
 
 export default function EntityEditCard({ entityId, customName, entityData, onClose, onRemove, onRename }: EntityEditCardProps) {
     const displayName = customName || entityData?.attributes.friendly_name || entityId;
@@ -54,9 +55,8 @@ export default function EntityEditCard({ entityId, customName, entityData, onClo
                 <button className="entity-card-area-btn" onClick={() => { setIsOpen(true) }}>Set clik area</button>
                 {isLight && (
                     <button
-                        className="entity-card-area-btn"
+                        className="entity-card-area-btn entity-card-light-overlay-btn"
                         onClick={() => { setIsLightOpen(true) }}
-                        style={{ marginTop: '8px', backgroundColor: '#eeb020', color: '#111', whiteSpace: 'normal', height: 'auto', padding: '10px 5px', lineHeight: '1.2' }}
                     >
                         Design Light Overlay
                     </button>

@@ -5,6 +5,7 @@ import DraggableEntityPin from '@/features/dnd/components/DraggableEntityPin';
 import { calcDropPercent } from "@/shared/utils/geometry";
 import { getLightStyle } from '@/features/lights/utils/lightUtils';
 import type { LightConfig, Room } from "@/features/rooms/types/rooms";
+import './LightEditor.css';
 
 interface LightEditorPreviewProps {
     currentRoom: Room | null | undefined;

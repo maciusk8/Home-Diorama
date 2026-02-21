@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Wheel from '@uiw/react-color-wheel';
 import { hsvaToHex, hexToHsva } from '@uiw/color-convert';
 import type { HsvaColor } from '@uiw/color-convert';
@@ -12,7 +12,6 @@ interface ColorControlProps {
 const DEFAULT_HSVA: HsvaColor = { h: 0, s: 0, v: 100, a: 1 };
 
 export default function ColorControl({ color, onChange, showBrightness = true }: ColorControlProps) {
-    const inputRef = useRef<HTMLInputElement>(null);
     const [isFocused, setIsFocused] = useState(false);
 
     const [hsva, setHsva] = useState<HsvaColor>(
@@ -53,9 +52,8 @@ export default function ColorControl({ color, onChange, showBrightness = true }:
     return (
         <div
             className="color-control-container"
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', width: '100%' }}
         >
-            <div style={{ position: 'relative' }}>
+            <div className="color-control-wheel-wrapper">
                 <Wheel
                     color={hsva}
                     onChange={(newColor) => handleColorChange(newColor.hsva)}
@@ -76,7 +74,7 @@ export default function ColorControl({ color, onChange, showBrightness = true }:
                             const newV = Number(e.target.value);
                             handleColorChange({ ...hsva, v: newV });
                         }}
-                        style={{ width: '100%' }}
+                        className="color-control-brightness-range"
                     />
                 </div>
             )}

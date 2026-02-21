@@ -5,6 +5,7 @@ import type { EntityState } from '@/shared/types/communication';
 import EntityEditCard from '@/features/entities/components/EntityEditCard';
 import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
+import './DragPin.css';
 
 interface DraggableEntityPinProps {
   entityId: string;

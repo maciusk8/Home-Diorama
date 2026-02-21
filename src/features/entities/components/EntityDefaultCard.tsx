@@ -1,5 +1,6 @@
 import AbstractEntityCard from '@/features/entities/components/AbstractEntityCard';
 import { type BaseEntityCardProps } from '@/shared/types/EntityCard';
+import './EntityCard.css';
 
 export default function EntityDefaultCard({ entityId, customName, entityData, onClose }: BaseEntityCardProps) {
     const displayName = customName || entityData?.attributes.friendly_name || entityId;

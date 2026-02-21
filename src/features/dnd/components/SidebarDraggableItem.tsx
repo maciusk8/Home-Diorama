@@ -9,22 +9,20 @@ export function SidebarDraggableItem({ id, data, children }: any) {
     data: data,
   });
 
-  const style = {
+  const style: React.CSSProperties = {
     opacity: transform ? 0.5 : 1,
-    display: 'flex',
-    alignItems: 'center',
   };
 
   return (
     <div
       ref={setNodeRef}
       style={style}
+      className="sidebar-draggable-item"
     >
       <div
         {...listeners}
         {...attributes}
         className="sidebar-drag-handle"
-        style={{ cursor: 'grab', marginRight: '8px', display: 'flex', alignItems: 'center' }}
       >
         <Icon path={mdiDragVertical} size={1} />
       </div>
