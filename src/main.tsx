@@ -1,9 +1,9 @@
 import { createRoot } from 'react-dom/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
-import App from './App.tsx';
-import { HomeAssistantProvider } from './providers/HomeAssistantProvider';
-import RoomProvider from './providers/RoomProvider';
+import App from '@/App';
+import { HomeAssistantProvider } from '@/shared/providers/HomeAssistantProvider';
+import RoomProvider from '@/shared/providers/RoomProvider';
 
 
 const HA_WS_URL = import.meta.env.VITE_HA_WS_URL;

@@ -1,7 +1,7 @@
 import './App.css';
 import { useState } from 'react';
-import NavBar from './components/NavBar';
-import RoomView from './components/RoomView';
+import NavBar from '@/shared/components/NavBar';
+import RoomView from '@/features/rooms/components/RoomView';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 export default function App() {
