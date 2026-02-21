@@ -11,28 +11,29 @@ import { DroppableMap } from './DnD/DopableMap';
 import RoomEntityPin from './RoomEntityPin';
 import { useRooms } from '../hooks/useRooms';
 import { calcDropPercent } from '../utils/geometry';
+import { getLightStyle } from '../utils/lightUtils';
 
 
 export default function RoomView({ isEditing }: { isEditing: boolean }) {
-    
+
     const { roomName } = useParams();
     const entitiesFromHook = useEntities();
-    const {rooms, setRooms, currentRoom, setCurrentRoom } = useRooms();
+    const { rooms, setRooms, currentRoom, setCurrentRoom, lightMap } = useRooms();
     const [activeId, setActiveId] = useState<string | null>(null);
     const mapRef = useRef<HTMLDivElement>(null);
-    
+
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: { distance: 5 },
         }),
     );
-    
-   useEffect(() => {
+
+    useEffect(() => {
         const foundRoom = rooms.find(room => room.name === roomName);
-        
+
         setCurrentRoom(foundRoom || null);
-        
-    }, [roomName, rooms, setCurrentRoom]); 
+
+    }, [roomName, rooms, setCurrentRoom]);
 
     useEffect(() => {
         document.body.style.backgroundColor = currentRoom?.bgColor || '';
@@ -110,6 +111,17 @@ export default function RoomView({ isEditing }: { isEditing: boolean }) {
                 )}
                 <DroppableMap id={currentRoom.name} ref={mapRef}>
                     <ImageDisplay image={currentRoom.image} changeImage={img => updateCurrentRoom({ image: img })} isEditing={isEditing} />
+
+                    {/* Render light visualisations */}
+                    {currentRoom.entities.map(entity => {
+                        const configs = lightMap.get(entity.id);
+                        if (!configs) return null;
+                        const entityData = entitiesFromHook.find(e => e.entity_id === entity.id);
+                        return configs.map((config, idx) => (
+                            <div key={`light-${entity.id}-${idx}`} style={getLightStyle(config, entityData, false)} />
+                        ));
+                    })}
+
                     {currentRoom.entities.map(entity => (
                         <RoomEntityPin
                             key={entity.id}
