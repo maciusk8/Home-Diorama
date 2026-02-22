@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DndContext, type DragEndEvent, DragOverlay, type DragStartEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import type { Room, Entity } from '@/features/rooms/types/rooms';
+import type { EntityState } from '@/shared/types/communication';
 
 import ImageDisplay from '@/shared/components/ImageDisplay';
 import EntityDropdown from '@/features/entities/components/EntityDropdown';
@@ -23,6 +24,12 @@ export default function RoomView({ isEditing }: { isEditing: boolean }) {
     const { rooms, setRooms, currentRoom, setCurrentRoom, lightMap } = useRooms();
     const [activeId, setActiveId] = useState<string | null>(null);
     const mapRef = useRef<HTMLDivElement>(null);
+
+    const entityMap = useMemo(() => {
+        const map = new Map<string, EntityState>();
+        for (const e of entitiesFromHook) map.set(e.entity_id, e);
+        return map;
+    }, [entitiesFromHook]);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -115,13 +122,13 @@ export default function RoomView({ isEditing }: { isEditing: boolean }) {
                     <ImageDisplay room={currentRoom}
                         changeImage={img => updateCurrentRoom({ image: img })}
                         isEditing={isEditing}
-                        sunEntity={entitiesFromHook.find(e => e.entity_id === 'sun.sun')} />
+                        sunEntity={entityMap.get('sun.sun')} />
 
                     {/* Render light visualisations */}
                     {currentRoom.entities.map(entity => {
                         const configs = lightMap.get(entity.id);
                         if (!configs) return null;
-                        const entityData = entitiesFromHook.find(e => e.entity_id === entity.id);
+                        const entityData = entityMap.get(entity.id);
                         return configs.map((config, idx) => (
                             <div key={`light-${entity.id}-${idx}`} style={getLightStyle(config, entityData, false)} />
                         ));
@@ -134,7 +141,7 @@ export default function RoomView({ isEditing }: { isEditing: boolean }) {
                             x={entity.x}
                             y={entity.y}
                             isEditing={isEditing}
-                            entityData={entitiesFromHook.find(e => e.entity_id === entity.id)}
+                            entityData={entityMap.get(entity.id)}
                             customName={entity.customName}
                             onRename={(name) => updateEntity(entity.id, { customName: name })}
                             onRemove={() => removeEntity(entity.id)}

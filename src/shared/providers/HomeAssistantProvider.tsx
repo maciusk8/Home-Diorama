@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useAuth } from '@/shared/hooks/useAuth';
 import type { EntityState, HomeAssistantContextType, HomeAssistantProviderProps } from '@/shared/types/communication';
 
@@ -49,14 +49,14 @@ export const HomeAssistantProvider: React.FC<HomeAssistantProviderProps> = ({ ha
         }
     }, [lastMessage]);
 
-    const contextValue: HomeAssistantContextType = {
+    const contextValue = useMemo<HomeAssistantContextType>(() => ({
         status,
         entities,
         lastMessage,
         sendCommand,
         error,
         reconnect
-    };
+    }), [status, entities, lastMessage, error]);
 
     return (
         <HAContext.Provider value={contextValue}>
