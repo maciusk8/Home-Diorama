@@ -23,6 +23,7 @@ export default function NavBar({ isEditing, setEditing }:
             const room: Room = {
                 name,
                 image: null,
+                nightImage: null,
                 bgColor: '',
                 entities: []
             };

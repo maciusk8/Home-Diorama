@@ -1,6 +1,7 @@
 export type Room = {
   name: string;
   image: string | null;
+  nightImage: string | null;
   bgColor: string;
   entities: Entity[];
 }

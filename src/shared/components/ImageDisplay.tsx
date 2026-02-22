@@ -1,13 +1,25 @@
 import ImageUploader from '@/shared/components/ImageUploader';
 import './ImageDisplay.css';
+import type { Room } from '@/features/rooms/types/rooms';
+import type { EntityState } from '@/shared/types/communication';
+import { useEffect, useState } from 'react';
 
 interface ImageDisplayProps {
-    image: string | null;
+    room: Room;
     changeImage: (newImage: string) => void;
     isEditing: boolean;
+    sunEntity: EntityState | undefined;
 }
 
-export default function ImageDisplay({ image, changeImage, isEditing }: ImageDisplayProps) {
+export default function ImageDisplay({ room, changeImage, isEditing, sunEntity }: ImageDisplayProps) {
+    const [image, setImage] = useState<string | null>(null);
+
+    useEffect(() => {
+        const isNight = sunEntity?.state === 'below_horizon';
+        const displayImage = (isNight && room.nightImage) ? room.nightImage : room.image;
+        setImage(displayImage);
+    }, [sunEntity, room]);
+
     if (!isEditing && !image) {
         return (
             <div className="image-display-container">

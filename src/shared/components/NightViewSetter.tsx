@@ -7,16 +7,18 @@ import { Button } from 'react-bootstrap';
 import '@/features/rooms/components/ImageAreaSelector.css';
 
 interface NightViewSetterProps {
+    onNightImageUpload: (newImage: string | null) => void;
 }
 
 
-export default function NightViewSetter({ }: NightViewSetterProps) {
+export default function NightViewSetter({ onNightImageUpload }: NightViewSetterProps) {
     const [isOpen, setOpen] = useState(false);
     const [nightImage, setNightImage] = useState<string | null>(null);
     const [isSaved, setIsSaved] = useState(false);
 
     const handleSave = () => {
         setIsSaved(true);
+        onNightImageUpload(nightImage);
         setTimeout(() => setOpen(false), 500);
     };
 
@@ -55,6 +57,7 @@ export default function NightViewSetter({ }: NightViewSetterProps) {
 
                         <div className="d-flex justify-content-end gap-3 mt-4 w-100">
                             <Button variant="secondary" onClick={() => setOpen(false)}>Close</Button>
+                            <Button variant="danger" onClick={() => { setNightImage(null); }}>Delete</Button>
                             <Button variant={isSaved ? "success" : "primary"} onClick={handleSave}>
                                 {isSaved ? "Saved!" : "Save"}
                             </Button>
