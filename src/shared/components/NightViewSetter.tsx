@@ -42,19 +42,14 @@ export default function NightViewSetter({ }: NightViewSetterProps) {
                         </div>
 
                         <div style={{ width: '100%', height: '60vh', minHeight: '300px' }}>
-                            <ImageUploader
-                                image={nightImage}
-                                onImageUpload={setNightImage}
-                                placeholderText={{
-                                    clickOrDrag: "Click or drag an image",
-                                    dropHere: "Drop image here..."
-                                }}
-                            >
-                                <img
-                                    src={nightImage!}
-                                    alt="Night View"
-                                    className="image-uploader-img"
-                                />
+                            <ImageUploader onImageUpload={setNightImage}>
+                                {nightImage && (
+                                    <img
+                                        src={nightImage}
+                                        alt="Night View"
+                                        className="image-uploader-img"
+                                    />
+                                )}
                             </ImageUploader>
                         </div>
 

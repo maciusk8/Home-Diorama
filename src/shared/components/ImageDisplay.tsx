@@ -32,15 +32,16 @@ export default function ImageDisplay({ image, changeImage, isEditing }: ImageDis
 
     return (
         <ImageUploader
-            image={image}
             onImageUpload={changeImage}
             className="image-display-uploader"
         >
-            <img
-                src={image!}
-                alt="Room"
-                className="image-uploader-img"
-            />
+            {image && (
+                <img
+                    src={image}
+                    alt="Room"
+                    className="image-uploader-img"
+                />
+            )}
         </ImageUploader>
     );
 }
