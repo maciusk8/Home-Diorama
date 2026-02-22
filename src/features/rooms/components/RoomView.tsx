@@ -13,6 +13,7 @@ import { useRooms } from '@/features/rooms/hooks/useRooms';
 import { calcDropPercent } from '@/shared/utils/geometry';
 import { getLightStyle } from '@/features/lights/utils/lightUtils';
 import './RoomView.css';
+import NightViewSetter from '@/shared/components/NightViewSetter';
 
 
 export default function RoomView({ isEditing }: { isEditing: boolean }) {
@@ -111,7 +112,10 @@ export default function RoomView({ isEditing }: { isEditing: boolean }) {
                     </div>
                 )}
                 <DroppableMap id={currentRoom.name} ref={mapRef}>
-                    <ImageDisplay image={currentRoom.image} changeImage={img => updateCurrentRoom({ image: img })} isEditing={isEditing} />
+                    <ImageDisplay room={currentRoom}
+                        changeImage={img => updateCurrentRoom({ image: img })}
+                        isEditing={isEditing}
+                        sunEntity={entitiesFromHook.find(e => e.entity_id === 'sun.sun')} />
 
                     {/* Render light visualisations */}
                     {currentRoom.entities.map(entity => {
@@ -143,10 +147,13 @@ export default function RoomView({ isEditing }: { isEditing: boolean }) {
             </DndContext>
 
             {isEditing && (
-                <WheelPalette
-                    currentColor={currentRoom.bgColor}
-                    onColorChange={color => updateCurrentRoom({ bgColor: color })}
-                />
+                <div className="bottom-right-corner-container">
+                    <NightViewSetter onNightImageUpload={img => updateCurrentRoom({ nightImage: img })} />
+                    <WheelPalette
+                        currentColor={currentRoom.bgColor}
+                        onColorChange={color => updateCurrentRoom({ bgColor: color })}
+                    />
+                </div>
             )}
         </div>
     );

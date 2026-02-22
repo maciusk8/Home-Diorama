@@ -46,3 +46,8 @@
   color: #666;
   font-size: 1.2rem;
 }
+
+.image-display-uploader .image-uploader-placeholder {
+  width: 50vw;
+  height: 90vh;
+}

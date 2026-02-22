@@ -7,7 +7,36 @@ body {
   justify-content: flex-start;
 }
 
+.bottom-right-corner-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 1rem;
+  z-index: 1000;
+}
 
+.bottom-right-corner-widget {
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 50%;
+  border: none;
+  background: #0d6efd;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background 0.2s ease;
+  padding: 0;
+}
+
+.bottom-right-corner-widget:hover {
+  background: #0b5ed7;
+  border-color: transparent;
+}
 
 .room {
   display: flex;
@@ -44,54 +73,8 @@ body {
   }
 }
 
-
-/* ========================================= */
-
-/* Entity Light Card Styles */
-
-/* =========================================*/
-
-/* Light Card Body */
-
-
-/* Light Control Area - Where the big sliders/wheel go */
-
-
-/* When in color mode, we might need auto height or different handling if wheel is large */
-
-
-/* Sliders */
-
-
-/* Brightness uses fill bar, so it needs masking/clipping */
-
 .brightness-slider {
   border-radius: 24px;
   overflow: hidden;
-  /* Keep overflow hidden for brightness since it uses simple fill */
   background: rgba(255, 255, 255, 0.1);
 }
-
-
-
-
-/* New class for the masked track part of temp slider */
-
-
-/* Mode Actions */
-
-
-/* Specific fix for Icon color inheritance and SIZING */
-
-
-/* Color Wheel & Hex Input */
-
-
-/* Presets */
-
-
-/* ========================================= */
-
-/* Light Editor Refactored Styles            */
-
-/* ========================================= */

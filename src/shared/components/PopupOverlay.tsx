@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import './PopupOverlay.css';
 
 interface PopupOverlayProps {
@@ -7,9 +8,10 @@ interface PopupOverlayProps {
 }
 
 export default function PopupOverlay({ onClose, children }: PopupOverlayProps) {
-    return (
+    return createPortal(
         <div className="popup-overlay" onClick={onClose}>
             {children}
-        </div>
+        </div>,
+        document.body
     );
 }

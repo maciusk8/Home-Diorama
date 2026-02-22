@@ -1,70 +1,59 @@
-import { useCallback, useEffect } from 'react';
-import { useDropzone } from 'react-dropzone';
+import ImageUploader from '@/shared/components/ImageUploader';
 import './ImageDisplay.css';
+import type { Room } from '@/features/rooms/types/rooms';
+import type { EntityState } from '@/shared/types/communication';
+import { useEffect, useState } from 'react';
 
 interface ImageDisplayProps {
-    image: string | null;
+    room: Room;
     changeImage: (newImage: string) => void;
     isEditing: boolean;
+    sunEntity: EntityState | undefined;
 }
 
-const messages = {
-    noImage: "No image",
-    clickOrDrag: "Click or drag an image",
-    dropHere: "Drop here to upload..."
-};
-
-export default function ImageDisplay({ image, changeImage, isEditing }: ImageDisplayProps) {
-
-    const onDrop = useCallback((acceptedFiles: File[]) => {
-        if (acceptedFiles.length > 0) {
-            const file = acceptedFiles[0];
-            const objectUrl = URL.createObjectURL(file);
-            changeImage(objectUrl);
-        }
-    }, [changeImage]);
+export default function ImageDisplay({ room, changeImage, isEditing, sunEntity }: ImageDisplayProps) {
+    const [image, setImage] = useState<string | null>(null);
 
     useEffect(() => {
-        return () => {
-            if (image && image.startsWith('blob:')) {
-                URL.revokeObjectURL(image);
-            }
-        };
-    }, [image]);
+        const isNight = sunEntity?.state === 'below_horizon';
+        const displayImage = (isNight && room.nightImage) ? room.nightImage : room.image;
+        setImage(displayImage);
+    }, [sunEntity, room]);
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        onDrop,
-        accept: {
-            'image/*': []
-        },
-        multiple: false,
-        noClick: !isEditing,
-        noDrag: !isEditing,
-        noDragEventsBubbling: !isEditing,
-    });
+    if (!isEditing && !image) {
+        return (
+            <div className="image-display-container">
+                <div className="image-display-placeholder">
+                    <p className="image-display-text">No image</p>
+                </div>
+            </div>
+        );
+    }
 
-    return (
-        <div
-            {...getRootProps()}
-            className={`image-display-container ${isEditing ? 'image-display-editing' : ''}`}
-        >
-            {isEditing && <input {...getInputProps()} />}
-
-            {image ? (
+    if (!isEditing && image) {
+        return (
+            <div className="image-display-container">
                 <img
                     src={image}
                     alt="Room"
                     className="image-display-img"
                 />
-            ) : (
-                <div className={`image-display-placeholder ${isDragActive ? 'image-display-drag-active' : ''}`}>
-                    <p className="image-display-text">
-                        {isEditing
-                            ? (isDragActive ? messages.dropHere : messages.clickOrDrag)
-                            : messages.noImage}
-                    </p>
-                </div>
+            </div>
+        );
+    }
+
+    return (
+        <ImageUploader
+            onImageUpload={changeImage}
+            className="image-display-uploader"
+        >
+            {image && (
+                <img
+                    src={image}
+                    alt="Room"
+                    className="image-uploader-img"
+                />
             )}
-        </div>
+        </ImageUploader>
     );
 }
