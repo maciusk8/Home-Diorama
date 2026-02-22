@@ -13,6 +13,7 @@ import { useRooms } from '@/features/rooms/hooks/useRooms';
 import { calcDropPercent } from '@/shared/utils/geometry';
 import { getLightStyle } from '@/features/lights/utils/lightUtils';
 import './RoomView.css';
+import NightViewSetter from '@/shared/components/NightViewSetter';
 
 
 export default function RoomView({ isEditing }: { isEditing: boolean }) {
@@ -143,10 +144,13 @@ export default function RoomView({ isEditing }: { isEditing: boolean }) {
             </DndContext>
 
             {isEditing && (
-                <WheelPalette
-                    currentColor={currentRoom.bgColor}
-                    onColorChange={color => updateCurrentRoom({ bgColor: color })}
-                />
+                <div className="bottom-right-corner-container">
+                    <NightViewSetter />
+                    <WheelPalette
+                        currentColor={currentRoom.bgColor}
+                        onColorChange={color => updateCurrentRoom({ bgColor: color })}
+                    />
+                </div>
             )}
         </div>
     );

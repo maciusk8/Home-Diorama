@@ -29,7 +29,7 @@ export default function WheelPalette({ currentColor, onColorChange }: WheelPalet
     return (
         <>
             <button
-                className="wheel-palette-fab"
+                className="bottom-right-corner-widget"
                 onClick={() => setOpen(true)}
                 title="Change background color"
             >
@@ -42,9 +42,9 @@ export default function WheelPalette({ currentColor, onColorChange }: WheelPalet
                         <h3 className="entity-card-title" style={{ marginBottom: '1rem' }}>Background Color</h3>
                         <ColorControl
                             color={hsvaToHex(hsva)}
-                            onChange={(hex) => { 
+                            onChange={(hex) => {
                                 setHsva(hexToHsva(hex));
-                                onColorChange(hex); 
+                                onColorChange(hex);
                             }}
                         />
                         <div className="wheel-palette-footer">
