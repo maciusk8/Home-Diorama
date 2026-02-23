@@ -155,7 +155,9 @@ export default function RoomView({ isEditing }: { isEditing: boolean }) {
 
             {isEditing && (
                 <div className="bottom-right-corner-container">
-                    <NightViewSetter onNightImageUpload={img => updateCurrentRoom({ nightImage: img })} />
+                    {currentRoom.image &&
+                        <NightViewSetter onNightImageUpload={img => updateCurrentRoom({ nightImage: img })} />
+                    }
                     <WheelPalette
                         currentColor={currentRoom.bgColor}
                         onColorChange={color => updateCurrentRoom({ bgColor: color })}

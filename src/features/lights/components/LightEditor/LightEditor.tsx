@@ -22,6 +22,10 @@ export default function LightEditor({ imageSrc, entityId, entityData, onClose }:
     );
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const [isSaved, setIsSaved] = useState(false);
+    const [isNightView, setIsNightView] = useState(false);
+
+    const hasNightImage = !!currentRoom?.nightImage;
+    const displayImage = (isNightView && currentRoom?.nightImage) ? currentRoom.nightImage : imageSrc;
 
     const updateConfig = (index: number, updates: Partial<LightConfig>) => {
         setConfigs(prev => {
@@ -68,7 +72,7 @@ export default function LightEditor({ imageSrc, entityId, entityData, onClose }:
 
                     <LightEditorPreview
                         currentRoom={currentRoom}
-                        imageSrc={imageSrc}
+                        imageSrc={displayImage}
                         configs={configs}
                         activeIndex={activeIndex}
                         entityData={entityData}
@@ -82,10 +86,13 @@ export default function LightEditor({ imageSrc, entityId, entityData, onClose }:
                         activeIndex={activeIndex}
                         activeConfig={activeConfig}
                         isSaved={isSaved}
+                        isNightView={isNightView}
+                        hasNightImage={hasNightImage}
                         updateConfig={updateConfig}
                         addLight={addLight}
                         removeLight={removeLight}
                         setActiveIndex={setActiveIndex}
+                        toggleNightView={() => setIsNightView(prev => !prev)}
                         onClose={onClose}
                         handleSave={handleSave}
                     />

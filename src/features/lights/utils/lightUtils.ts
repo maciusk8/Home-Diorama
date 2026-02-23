@@ -4,25 +4,22 @@ export function getLightStyle(config: LightConfig, entityData: any, isEditor: bo
     const { type, radius, angle, spread, position, maxBrightness } = config;
 
     let r = 255, g = 255, b = 255;
-    const attrs = entityData?.attributes || {};
-    if (attrs.rgb_color) {
-        [r, g, b] = attrs.rgb_color;
-    } else if (attrs.color_temp) {
-        r = 255; g = 240; b = 220; // fallback warm color
-    }
-
-    const state = entityData?.state;
-    // HA brightness is 0-255. Default to 255 (1.0) if not provided.
-    const haBrightness = attrs.brightness ? attrs.brightness / 255 : 1;
-
     let targetAlpha = 0;
 
     if (isEditor) {
-        // In editor, we want to see the configuration clearly.
-        // If the light is visually 'off' in HA, mock it as 'on' at 100% HA brightness so we can preview the shape.
-        const baseBright = state === 'on' ? haBrightness : 1;
-        targetAlpha = baseBright * maxBrightness;
+        // Editor mode: always white at maxBrightness, independent of HA state
+        targetAlpha = maxBrightness;
     } else {
+        const attrs = entityData?.attributes || {};
+        if (attrs.rgb_color) {
+            [r, g, b] = attrs.rgb_color;
+        } else if (attrs.color_temp) {
+            r = 255; g = 240; b = 220; // fallback warm color
+        }
+
+        const state = entityData?.state;
+        const haBrightness = attrs.brightness ? attrs.brightness / 255 : 1;
+
         if (state === 'on') {
             targetAlpha = haBrightness * maxBrightness;
         } else {

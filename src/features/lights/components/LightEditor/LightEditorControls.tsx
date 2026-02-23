@@ -1,6 +1,6 @@
 import { Button, Form, Dropdown } from "react-bootstrap";
 import Icon from '@mdi/react';
-import { mdiTrashCanOutline, mdiPlus } from '@mdi/js';
+import { mdiTrashCanOutline, mdiPlus, mdiWeatherNight, mdiWeatherSunny } from '@mdi/js';
 import type { LightConfig } from "@/features/rooms/types/rooms";
 import './LightEditor.css';
 
@@ -9,10 +9,13 @@ interface LightEditorControlsProps {
     activeIndex: number;
     activeConfig: LightConfig;
     isSaved: boolean;
+    isNightView: boolean;
+    hasNightImage: boolean;
     updateConfig: (index: number, updates: Partial<LightConfig>) => void;
     addLight: () => void;
     removeLight: (index: number) => void;
     setActiveIndex: (index: number) => void;
+    toggleNightView: () => void;
     onClose: () => void;
     handleSave: () => void;
 }
@@ -22,10 +25,13 @@ export default function LightEditorControls({
     activeIndex,
     activeConfig,
     isSaved,
+    isNightView,
+    hasNightImage,
     updateConfig,
     addLight,
     removeLight,
     setActiveIndex,
+    toggleNightView,
     onClose,
     handleSave
 }: LightEditorControlsProps) {
@@ -34,22 +40,41 @@ export default function LightEditorControls({
         <div className="light-editor-controls-wrapper">
             <div className="light-editor-controls-layout">
 
-                {/* Left: Light Selection */}
+                {/* Left: Type dropdown + Light management dropdown */}
                 <div className="light-editor-controls-left">
+                    {/* Type Dropdown */}
                     <Dropdown>
                         <Dropdown.Toggle variant="dark" size="sm" className="light-editor-controls-dropdown-toggle">
                             {activeConfig.type === 'point' ? 'Point Light' : 'Directional Light'}
                         </Dropdown.Toggle>
                         <Dropdown.Menu variant="dark">
+                            <Dropdown.Item
+                                active={activeConfig.type === 'point'}
+                                onClick={() => updateConfig(activeIndex, { type: 'point' })}
+                            >
+                                Point Light
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                                active={activeConfig.type === 'directional'}
+                                onClick={() => updateConfig(activeIndex, { type: 'directional' })}
+                            >
+                                Directional Light
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+
+                    {/* Light Management Dropdown */}
+                    <Dropdown>
+                        <Dropdown.Toggle variant="dark" size="sm" className="light-editor-controls-dropdown-toggle">
+                            Light {activeIndex + 1}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu variant="dark">
                             {configs.map((_, i) => (
                                 <Dropdown.Item key={i} active={i === activeIndex} onClick={() => setActiveIndex(i)}>
-                                    Select Light {i + 1}
+                                    Light {i + 1}
                                 </Dropdown.Item>
                             ))}
                             <Dropdown.Divider />
-                            <Dropdown.Item className="text-secondary" onClick={() => updateConfig(activeIndex, { type: activeConfig.type === 'point' ? 'directional' : 'point' })}>
-                                Switch to {activeConfig.type === 'point' ? 'Directional' : 'Point'}
-                            </Dropdown.Item>
                             <Dropdown.Item className="text-success" onClick={addLight}>
                                 <Icon path={mdiPlus} size={0.7} className="me-2" /> Add New Light
                             </Dropdown.Item>
@@ -60,6 +85,19 @@ export default function LightEditorControls({
                             )}
                         </Dropdown.Menu>
                     </Dropdown>
+
+                    {/* Night View Toggle */}
+                    {hasNightImage && (
+                        <Button
+                            variant="dark"
+                            size="sm"
+                            className="light-editor-controls-night-toggle"
+                            onClick={toggleNightView}
+                            title={isNightView ? 'Switch to Day' : 'Switch to Night'}
+                        >
+                            <Icon path={isNightView ? mdiWeatherSunny : mdiWeatherNight} size={0.7} />
+                        </Button>
+                    )}
                 </div>
 
                 {/* Center: Sliders */}
@@ -68,7 +106,7 @@ export default function LightEditorControls({
                         <Form.Label className="mb-0 text-light opacity-75 d-flex justify-content-between light-editor-slider-label">
                             <span>Max Bright</span> <span>{Math.round(activeConfig.maxBrightness * 100)}%</span>
                         </Form.Label>
-                        <Form.Range min={0.1} max={5} step={0.1} value={activeConfig.maxBrightness} onChange={(e) => updateConfig(activeIndex, { maxBrightness: parseFloat(e.target.value) })} />
+                        <Form.Range min={0.01} max={1} step={0.01} value={activeConfig.maxBrightness} onChange={(e) => updateConfig(activeIndex, { maxBrightness: parseFloat(e.target.value) })} />
                     </div>
                     <div className="light-editor-slider-wrapper">
                         <Form.Label className="mb-0 text-light opacity-75 d-flex justify-content-between light-editor-slider-label">
