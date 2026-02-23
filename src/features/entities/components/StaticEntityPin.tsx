@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import type { EntityState } from '@/shared/types/communication';
 import { useLongPress, LongPressEventType } from 'use-long-press';
-import useSwitches from '@/features/entities/hooks/useSwitches';
+import { useEntityRegistry } from '@/features/entities/entityRegistry';
 import EntityCardRenderer from '@/features/entities/components/EntityCardRenderer';
 import { useRooms } from '@/features/rooms/hooks/useRooms';
 import { translateToString } from '@/shared/utils/geometry';
@@ -17,11 +17,13 @@ interface StaticPinProps {
 
 export default function StaticEntityPin({ entityId, x, y, entityData, customName }: StaticPinProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const { toggle } = useSwitches();
     const { areaMap } = useRooms();
     const isLongPress = useRef(false);
 
     const entityArea = areaMap.get(entityId);
+    const domain = entityId.split('.')[0];
+    const { getRegistryEntry } = useEntityRegistry();
+    const registryEntry = getRegistryEntry(domain);
 
     const bind = useLongPress(() => {
         isLongPress.current = true;
@@ -42,18 +44,15 @@ export default function StaticEntityPin({ entityId, x, y, entityData, customName
         zIndex: 1,
     };
 
-    const domain = entityId.split('.')[0];
-
     const handleClick = () => {
         if (isLongPress.current) return;
 
-        switch (domain) {
-            case 'switch':
-            case 'light':
-                toggle(entityId);
-                break;
-            default:
-                setIsOpen(true);
+        if (registryEntry.onPinClick) {
+            registryEntry.onPinClick(entityId, {
+                openCard: () => setIsOpen(true)
+            });
+        } else {
+            setIsOpen(true);
         }
     };
 
@@ -103,7 +102,6 @@ export default function StaticEntityPin({ entityId, x, y, entityData, customName
             {isOpen && (
                 <EntityCardRenderer
                     entityId={entityId}
-                    domain={domain}
                     customName={customName}
                     entityData={entityData}
                     onClose={() => setIsOpen(false)}
