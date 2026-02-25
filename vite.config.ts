@@ -12,9 +12,9 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
-    proxy: {
+    proxy: { 
       '/api': {
-        target: 'http://192.168.1.75:8123',
+        target: 'http://localhost:3000', 
         changeOrigin: true,
         secure: false,
       }
