@@ -19,6 +19,17 @@ const initScript = db.transaction(() => {
     );
   `).run();
 
+  //pin types (entity, sensor, etc.)
+  db.query(`
+    CREATE TABLE IF NOT EXISTS pinTypes (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL
+    );
+  `).run();
+
+  db.query(`INSERT OR IGNORE INTO pinTypes (id, name) VALUES ($id, 'entity')`)
+    .run({ $id: crypto.randomUUID() });
+
   //room pins
   db.query(`
     CREATE TABLE IF NOT EXISTS roomPins (
@@ -33,11 +44,24 @@ const initScript = db.transaction(() => {
     );
   `).run();
 
-  //lights
+  //light types (point, directional, etc.)
+  db.query(`
+    CREATE TABLE IF NOT EXISTS lightTypes (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL
+    );
+  `).run();
+
+  db.query(`INSERT OR IGNORE INTO lightTypes (id, name) VALUES ($id, 'Point Light')`)
+    .run({ $id: crypto.randomUUID() });
+  db.query(`INSERT OR IGNORE INTO lightTypes (id, name) VALUES ($id, 'Directional Light')`)
+    .run({ $id: crypto.randomUUID() });
+
+  //entity lights — tied to a specific pin in a room
   db.query(`
     CREATE TABLE IF NOT EXISTS entityLights (
       id TEXT PRIMARY KEY,
-      roomId TEXT NOT NULL,
+      pinId TEXT NOT NULL,
       typeId TEXT NOT NULL, 
       maxBrightness REAL NOT NULL,
       radius REAL NOT NULL,
@@ -45,19 +69,10 @@ const initScript = db.transaction(() => {
       spread REAL NOT NULL,
       x REAL NOT NULL,
       y REAL NOT NULL,
-      FOREIGN KEY(roomId) REFERENCES rooms(id) ON DELETE CASCADE,
-      FOREIGN KEY(typeId) REFERENCES pinTypes(id) ON DELETE CASCADE
+      FOREIGN KEY(pinId) REFERENCES roomPins(id) ON DELETE CASCADE,
+      FOREIGN KEY(typeId) REFERENCES lightTypes(id)
     );
   `).run();
-
-  //entity types
-  db.query(`
-    CREATE TABLE IF NOT EXISTS pinTypes (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL
-    );
-    INSERT INTO pinTypes (id, name) VALUES ($id, 'entity');
-  `).run({ $id: crypto.randomUUID() });
 
   //clickable areas
   db.query(`

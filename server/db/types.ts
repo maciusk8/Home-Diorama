@@ -1,5 +1,3 @@
-// DB-level types matching the SQLite schema from init-db.ts
-
 export interface DbRoom {
     id: string;
     name: string;
@@ -19,7 +17,7 @@ export interface DbPin {
 
 export interface DbLight {
     id: string;
-    roomId: string;
+    pinId: string;
     typeId: string;
     maxBrightness: number;
     radius: number;
@@ -34,13 +32,17 @@ export interface DbPinType {
     name: string;
 }
 
+export interface DbLightType {
+    id: string;
+    name: string;
+}
+
 export interface DbArea {
     id: string;
     roomPinId: string;
-    points: string; // JSON-serialized [number, number][]
+    points: string;
 }
 
-/** What insertArea/updateArea receive before JSON.stringify */
 export interface DbAreaInput {
     id: string;
     roomPinId: string;

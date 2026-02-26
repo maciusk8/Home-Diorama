@@ -2,12 +2,13 @@ import { db } from "./connection";
 import type { DbRoom } from "./types";
 
 export const getRoomsData = () => {
-    const rooms = db.query(`SELECT * FROM rooms`).all();
+    const rooms = db.query(`SELECT * FROM rooms ORDER BY rowid`).all();
     const pins = db.query(`SELECT * FROM roomPins`).all();
     const lights = db.query(`SELECT * FROM entityLights`).all();
     const areas = db.query(`SELECT * FROM pinAreas`).all();
+    const lightTypes = db.query(`SELECT * FROM lightTypes`).all();
 
-    return { rooms, pins, lights, areas };
+    return { rooms, pins, lights, areas, lightTypes };
 };
 
 export const getRoomById = (id: string) => {
@@ -23,7 +24,7 @@ export const insertRoom = (room: DbRoom) => {
         $name: room.name,
         $image: room.image || null,
         $nightImage: room.nightImage || null,
-        $bgColor: room.bgColor || 'transparent'
+        $bgColor: room.bgColor || '#ffffff'
     });
 };
 
@@ -40,7 +41,7 @@ export const updateRoom = (room: DbRoom) => {
         $name: room.name,
         $image: room.image || null,
         $nightImage: room.nightImage || null,
-        $bgColor: room.bgColor || 'transparent'
+        $bgColor: room.bgColor || '#ffffff'
     });
 };
 

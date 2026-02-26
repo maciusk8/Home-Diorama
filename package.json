@@ -16,6 +16,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@mdi/js": "^7.4.47",
     "@mdi/react": "^1.6.1",
+    "@tanstack/react-query": "^5.90.21",
     "@uiw/react-color-swatch": "^2.9.5",
     "@uiw/react-color-wheel": "^2.9.5",
     "bootstrap": "^5.3.8",

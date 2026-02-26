@@ -3,7 +3,7 @@ import Icon from '@mdi/react';
 import { mdiPencilOutline } from '@mdi/js';
 import AbstractEntityCard from '@/features/entities/components/AbstractEntityCard';
 import { type EntityEditCardProps } from '@/shared/types/EntityCard';
-import { useRooms } from '@/features/rooms/hooks/useRooms';
+import useCurrentRoom from '@/shared/hooks/useCurrentRoom';
 import ImageAreaSelector from '@/features/rooms/components/ImageAreaSelector';
 import LightEditor from '@/features/lights/components/LightEditor/LightEditor';
 import './EntityCard.css';
@@ -15,7 +15,7 @@ export default function EntityEditCard({ entityId, customName, entityData, onClo
     const [isOpen, setIsOpen] = useState(false);
     const [isLightOpen, setIsLightOpen] = useState(false);
     const isLight = entityId.startsWith('light.');
-    const { currentRoom } = useRooms();
+    const { room: currentRoom } = useCurrentRoom();
 
     const handleSaveName = () => {
         const trimmed = nameInput.trim();

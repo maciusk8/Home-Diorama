@@ -27,3 +27,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+ha_dashboard.sqlite
+server/uploads/*

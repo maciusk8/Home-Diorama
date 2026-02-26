@@ -3,7 +3,7 @@ import * as DB from '../db/index';
 
 const lightBody = t.Object({
     id: t.String(),
-    roomId: t.String(),
+    pinId: t.String(),
     typeId: t.String(),
     maxBrightness: t.Number(),
     radius: t.Number(),
@@ -14,7 +14,6 @@ const lightBody = t.Object({
 });
 
 const lightUpdateBody = t.Object({
-    roomId: t.String(),
     typeId: t.String(),
     maxBrightness: t.Number(),
     radius: t.Number(),
@@ -50,5 +49,19 @@ export const lightsRoutes = new Elysia({ prefix: '/lights' })
         } catch (error) {
             set.status = 400;
             return { success: false, error: 'Failed to delete light' };
+        }
+    })
+    .post('/batch', ({ body, set }) => {
+        try {
+            const { pinId, configs } = body as {
+                pinId: string;
+                configs: { typeId: string; maxBrightness: number; radius: number; angle: number; spread: number; x: number; y: number }[];
+            };
+
+            DB.replaceLightsForPin(pinId, configs);
+            return { success: true };
+        } catch (error) {
+            set.status = 400;
+            return { success: false, error: 'Failed to batch save lights' };
         }
     });

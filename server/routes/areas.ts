@@ -30,6 +30,15 @@ export const areasRoutes = new Elysia({ prefix: '/areas' })
             return { success: false, error: 'Failed to update area' };
         }
     }, { body: areaUpdateBody })
+    .put('/by-pin/:pinId', ({ params: { pinId }, body, set }) => {
+        try {
+            DB.replaceAreaForPin(pinId, body.points);
+            return { success: true };
+        } catch (error) {
+            set.status = 400;
+            return { success: false, error: 'Failed to replace area' };
+        }
+    }, { body: areaUpdateBody })
     .delete('/:id', ({ params: { id }, set }) => {
         try {
             DB.removeArea(id);

@@ -5,9 +5,11 @@ import { pinsRoutes } from './routes/pins';
 import { lightsRoutes } from './routes/lights';
 import { areasRoutes } from './routes/areas';
 import { pinTypesRoutes } from './routes/pinTypes';
+import { uploadsRoutes } from './routes/uploads';
 
 const app = new Elysia()
-  .group('/api', (api) => api
+  .use(uploadsRoutes)
+  .group('/api/local', (api) => api
     .use(roomsRoutes)
     .use(pinsRoutes)
     .use(lightsRoutes)

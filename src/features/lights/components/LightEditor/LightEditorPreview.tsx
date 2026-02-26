@@ -1,14 +1,14 @@
 import { useRef, useState } from "react";
 import { DndContext, type DragEndEvent, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { DroppableMap } from "@/features/dnd/components/DroppableMap";
-import DraggableEntityPin from '@/features/dnd/components/DraggableEntityPin';
+import DraggableAreaPoint from '@/features/dnd/components/DraggableAreaPoint';
 import { calcDropPercent } from "@/shared/utils/geometry";
 import { getLightStyle } from '@/features/lights/utils/lightUtils';
-import type { LightConfig, Room } from "@/features/rooms/types/rooms";
+import type { LightConfig } from "@/features/rooms/types/rooms";
+import useCurrentRoom from '@/shared/hooks/useCurrentRoom';
 import './LightEditor.css';
 
 interface LightEditorPreviewProps {
-    currentRoom: Room | null | undefined;
     imageSrc: string;
     configs: LightConfig[];
     activeIndex: number;
@@ -19,7 +19,6 @@ interface LightEditorPreviewProps {
 }
 
 export default function LightEditorPreview({
-    currentRoom,
     imageSrc,
     configs,
     activeIndex,
@@ -28,6 +27,7 @@ export default function LightEditorPreview({
     setActiveIndex,
     setIsSaved
 }: LightEditorPreviewProps) {
+    const { room: currentRoom } = useCurrentRoom();
     const mapRef = useRef<HTMLDivElement>(null);
     const imageContainerRef = useRef<HTMLDivElement>(null);
 
@@ -71,19 +71,16 @@ export default function LightEditorPreview({
                             className="light-editor-preview-img"
                         />
 
-                        {/* CSS Light Visualisations */}
                         {configs.map((config, idx) => (
                             <div key={`light-style-${idx}`} style={getLightStyle(config, entityData, true)} />
                         ))}
 
-                        {/* Drag Handles for the center of the lights */}
                         {configs.map((config, idx) => (
-                            <DraggableEntityPin
+                            <DraggableAreaPoint
                                 key={`light-center-${idx}`}
-                                entityId={`light-center-${idx}`}
+                                pointId={`light-center-${idx}`}
                                 x={config.position.x}
                                 y={config.position.y}
-                                type="area_point"
                                 disabled={false}
                                 isOpen={activeIndex === idx}
                                 onOpen={() => setActiveIndex(idx)}
