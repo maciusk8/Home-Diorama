@@ -3,7 +3,7 @@ import type { EntityState } from '@/shared/types/communication';
 import { useLongPress, LongPressEventType } from 'use-long-press';
 import { useEntityRegistry } from '@/features/entities/entityRegistry';
 import EntityCardRenderer from '@/features/entities/components/EntityCardRenderer';
-import { useRooms } from '@/features/rooms/hooks/useRooms';
+import useCurrentRoom from '@/shared/hooks/useCurrentRoom';
 import { translateToString } from '@/shared/utils/geometry';
 import '@/features/dnd/components/DragPin.css';
 
@@ -17,7 +17,7 @@ interface StaticPinProps {
 
 export default function StaticEntityPin({ entityId, x, y, entityData, customName }: StaticPinProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const { areaMap } = useRooms();
+    const { areaMap } = useCurrentRoom();
     const isLongPress = useRef(false);
 
     const entityArea = areaMap.get(entityId);

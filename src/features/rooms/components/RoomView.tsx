@@ -1,28 +1,27 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { DndContext, type DragEndEvent, DragOverlay, type DragStartEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import type { Room, Entity } from '@/features/rooms/types/rooms';
+import { useEffect, useMemo, useRef } from 'react';
+import { DndContext, DragOverlay } from '@dnd-kit/core';
 import type { EntityState } from '@/shared/types/communication';
 
 import ImageDisplay from '@/shared/components/ImageDisplay';
 import EntityDropdown from '@/features/entities/components/EntityDropdown';
-import WheelPalette from '@/shared/components/WheelPalette';
 import { useEntities } from '@/features/entities/hooks/useEntities';
 import { DroppableMap } from '@/features/dnd/components/DroppableMap';
 import RoomEntityPin from '@/features/rooms/components/RoomEntityPin';
-import { useRooms } from '@/features/rooms/hooks/useRooms';
-import { calcDropPercent } from '@/shared/utils/geometry';
+import RoomToolbar from '@/features/rooms/components/RoomToolbar';
 import { getLightStyle } from '@/features/lights/utils/lightUtils';
+import useCurrentRoom from '@/shared/hooks/useCurrentRoom';
+import useRoomMutations from '@/features/rooms/hooks/useRoomMutations';
+import useRoomDnd from '@/features/rooms/hooks/useRoomDnd';
+import type { LightConfig } from '@/features/rooms/types/rooms';
 import './RoomView.css';
-import NightViewSetter from '@/shared/components/NightViewSetter';
 
 
 export default function RoomView({ isEditing }: { isEditing: boolean }) {
 
-    const { roomName } = useParams();
     const entitiesFromHook = useEntities();
-    const { rooms, setRooms, currentRoom, setCurrentRoom, lightMap } = useRooms();
-    const [activeId, setActiveId] = useState<string | null>(null);
+    const { room: currentRoom, pins, lights, lightTypeMap, pinTypeMap, isLoading } = useCurrentRoom();
+    const mutations = useRoomMutations();
+
     const mapRef = useRef<HTMLDivElement>(null);
 
     const entityMap = useMemo(() => {
@@ -31,141 +30,87 @@ export default function RoomView({ isEditing }: { isEditing: boolean }) {
         return map;
     }, [entitiesFromHook]);
 
-    const sensors = useSensors(
-        useSensor(PointerSensor, {
-            activationConstraint: { distance: 5 },
-        }),
-    );
+    const lightConfigMap = useMemo(() => {
+        const map = new Map<string, LightConfig[]>();
+        for (const light of lights) {
+            const typeName = lightTypeMap.byId.get(light.typeId) ?? 'Point Light';
+            const config: LightConfig = {
+                type: (typeName === 'Point Light' ? 'point' : 'directional') as 'point' | 'directional',
+                maxBrightness: light.maxBrightness,
+                radius: light.radius,
+                angle: light.angle,
+                spread: light.spread,
+                position: { x: light.x, y: light.y },
+            };
+            const existing = map.get(light.pinId) ?? [];
+            existing.push(config);
+            map.set(light.pinId, existing);
+        }
+        return map;
+    }, [lights, lightTypeMap]);
 
-    useEffect(() => {
-        const foundRoom = rooms.find(room => room.name === roomName);
+    const entityTypeId = pinTypeMap?.byName.get('entity');
 
-        setCurrentRoom(foundRoom || null);
-
-    }, [roomName, rooms, setCurrentRoom]);
+    const dnd = useRoomDnd({
+        currentRoom: currentRoom!,
+        pins,
+        entityTypeId,
+        mapRef,
+        updatePin: mutations.updatePin,
+        addPin: mutations.addPin,
+    });
 
     useEffect(() => {
         document.body.style.backgroundColor = currentRoom?.bgColor || '';
         return () => { document.body.style.backgroundColor = ''; };
     }, [currentRoom?.bgColor]);
 
-    if (!currentRoom) {
-        return <div style={{ color: 'red' }}>Room not found: {roomName}</div>;
-    }
-
-    //Room update helpers
-
-    const updateCurrentRoom = (patch: Partial<Room>) => {
-        const updated = { ...currentRoom, ...patch };
-        setRooms(rooms.map(r => r.name === currentRoom.name ? updated : r));
-    };
-
-    const updateEntity = (entityId: string, patch: Partial<Entity>) => {
-        updateCurrentRoom({
-            entities: currentRoom.entities.map(e =>
-                e.id === entityId ? { ...e, ...patch } : e
-            )
-        });
-    };
-
-    const removeEntity = (entityId: string) => {
-        updateCurrentRoom({
-            entities: currentRoom.entities.filter(e => e.id !== entityId)
-        });
-    };
-
-    // Drag handlers
-
-    function handleDragStart(event: DragStartEvent) {
-        setActiveId(event.active.id as string);
-    }
-
-    function handleDragEnd(event: DragEndEvent) {
-        if (!currentRoom) return;
-        const { active, over } = event;
-
-        if (over?.id === currentRoom.name && mapRef.current) {
-            const dropPosition = calcDropPercent(active, mapRef.current);
-
-            if (dropPosition) {
-                const isPin = active.data.current?.type === 'pin';
-
-                if (isPin) {
-                    updateEntity(active.data.current?.entityId, dropPosition);
-                } else {
-                    const entityId = active.id as string;
-                    const alreadyOnMap = currentRoom.entities.some(e => e.id === entityId);
-
-                    if (!alreadyOnMap) {
-                        updateCurrentRoom({
-                            entities: [...currentRoom.entities, { id: entityId, ...dropPosition }]
-                        });
-                    }
-                }
-            }
-        }
-
-        setActiveId(null);
-    }
-
-    //Render
+    if (isLoading) return <div>Loading...</div>;
+    if (!currentRoom) return <div style={{ color: 'red' }}>Room not found</div>;
 
     return (
         <div className='roomView'>
-            <DndContext sensors={sensors} onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
+            <DndContext sensors={dnd.sensors} onDragEnd={dnd.handleDragEnd} onDragStart={dnd.handleDragStart}>
                 {isEditing && (
                     <div className="entity-sidebar">
                         <EntityDropdown entities={entitiesFromHook} />
                     </div>
                 )}
-                <DroppableMap id={currentRoom.name} ref={mapRef}>
+                <DroppableMap id={currentRoom.id} ref={mapRef}>
                     <ImageDisplay room={currentRoom}
-                        changeImage={img => updateCurrentRoom({ image: img })}
+                        changeImage={(img: string | null) => mutations.updateRoom(currentRoom, { image: img })}
                         isEditing={isEditing}
                         sunEntity={entityMap.get('sun.sun')} />
 
-                    {/* Render light visualisations */}
-                    {currentRoom.entities.map(entity => {
-                        const configs = lightMap.get(entity.id);
+                    {pins.map(pin => {
+                        const configs = lightConfigMap.get(pin.id);
                         if (!configs) return null;
-                        const entityData = entityMap.get(entity.id);
+                        const entityData = entityMap.get(pin.id);
                         return configs.map((config, idx) => (
-                            <div key={`light-${entity.id}-${idx}`} style={getLightStyle(config, entityData, false)} />
+                            <div key={`light-${pin.id}-${idx}`} style={getLightStyle(config, entityData, false)} />
                         ));
                     })}
 
-                    {currentRoom.entities.map(entity => (
+                    {pins.map(pin => (
                         <RoomEntityPin
-                            key={entity.id}
-                            id={entity.id}
-                            x={entity.x}
-                            y={entity.y}
+                            key={pin.id}
+                            id={pin.id}
+                            x={pin.x}
+                            y={pin.y}
                             isEditing={isEditing}
-                            entityData={entityMap.get(entity.id)}
-                            customName={entity.customName}
-                            onRename={(name) => updateEntity(entity.id, { customName: name })}
-                            onRemove={() => removeEntity(entity.id)}
+                            entityData={entityMap.get(pin.id)}
+                            customName={pin.customName ?? undefined}
+                            onRename={(name: string) => mutations.updatePin(pins, pin.id, { customName: name })}
+                            onRemove={() => mutations.removePin(pin.id)}
                         />
                     ))}
                 </DroppableMap>
                 <DragOverlay dropAnimation={null}>
-                    {activeId ? <div className="drag-pin" /> : null}
+                    {dnd.activeId ? <div className="drag-pin" /> : null}
                 </DragOverlay>
             </DndContext>
 
-            {isEditing && (
-                <div className="bottom-right-corner-container">
-                    {currentRoom.image &&
-                        <NightViewSetter onNightImageUpload={img => updateCurrentRoom({ nightImage: img })} />
-                    }
-                    <WheelPalette
-                        currentColor={currentRoom.bgColor}
-                        onColorChange={color => updateCurrentRoom({ bgColor: color })}
-                    />
-                </div>
-            )}
+            {isEditing && <RoomToolbar room={currentRoom} updateRoom={mutations.updateRoom} />}
         </div>
     );
 }
-
-

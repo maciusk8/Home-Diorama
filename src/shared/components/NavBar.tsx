@@ -1,67 +1,24 @@
 import { Nav, Button } from 'react-bootstrap';
-import type { Room } from '@/features/rooms/types/rooms';
 import { NavLink } from 'react-router-dom';
-import { useRooms } from '@/features/rooms/hooks/useRooms';
+import useHomeData from '@/shared/hooks/useHomeData';
+import { generateSlugs } from '@/shared/utils/roomSlugs';
+import useRoomMutations from '@/shared/hooks/useRoomMutations';
 import './NavBar.css';
-
-const messages: string[] = [
-    "Enter room name:",
-    "Name must be unique and not empty.",
-];
-
-const inputMessage = messages[0];
-const errorMessage = messages[1];
-
 
 export default function NavBar({ isEditing, setEditing }:
     { isEditing: boolean; setEditing: React.Dispatch<React.SetStateAction<boolean>> }) {
 
-    const { rooms, setRooms } = useRooms();
-    const addRoom = () => {
-        const name = prompt(inputMessage);
-        if (name && ensureUniqueNames(name, -1)) {
-            const room: Room = {
-                name,
-                image: null,
-                nightImage: null,
-                bgColor: '',
-                entities: []
-            };
-            setRooms([...rooms, room]);
-        }
-        else {
-            alert(errorMessage);
-        }
-    }
+    const { rooms } = useHomeData();
+    const { addRoom, removeRoom, renameRoom } = useRoomMutations();
 
-    const removeRoom = (index: number) => {
-        setRooms(rooms.filter((_, i) => i !== index));
-    }
-
-    const renameRoom = (index: number) => {
-        const currentName = rooms[index].name || "";
-        const newName = prompt(inputMessage, currentName);
-
-        if (newName && ensureUniqueNames(newName, index)) {
-            const updatedRooms = [...rooms];
-            updatedRooms[index] = { ...updatedRooms[index], name: newName };
-            setRooms(updatedRooms);
-        }
-        else {
-            alert(errorMessage);
-        }
-    }
-
-    const ensureUniqueNames = (name: string, index: number) => {
-        return rooms.every((room, i) => i === index || room.name !== name);
-    }
+    const slugMap = rooms ? generateSlugs(rooms) : new Map<string, string>();
 
     return isEditing ? (
         <Nav variant="tabs" className='nav'>
-            {rooms.map((room, index) => (
-                <Nav.Item key={index}>
+            {rooms?.map((room) => (
+                <Nav.Item key={room.id}>
                     <Nav.Link
-                        onClick={() => renameRoom(index)}
+                        onClick={() => renameRoom(room)}
                         className="d-flex justify-content-between align-items-center"
                     >
                         {room.name}
@@ -69,7 +26,7 @@ export default function NavBar({ isEditing, setEditing }:
                             className='deleteName nav-item-right'
                             onClick={(e) => {
                                 e.stopPropagation();
-                                removeRoom(index);
+                                removeRoom(room.id);
                             }}>
                             x
                         </div>
@@ -88,9 +45,9 @@ export default function NavBar({ isEditing, setEditing }:
 
     ) : (
         <Nav variant="tabs" className='nav'>
-            {rooms.map((room, index) => (
-                <Nav.Item key={index}>
-                    <Nav.Link as={NavLink} to={`/${room.name}`}>
+            {rooms?.map((room) => (
+                <Nav.Item key={room.id}>
+                    <Nav.Link as={NavLink} to={`/${slugMap.get(room.id)}`}>
                         {room.name}
                     </Nav.Link>
                 </Nav.Item>

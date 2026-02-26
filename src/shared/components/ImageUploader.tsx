@@ -8,6 +8,20 @@ interface ImageUploaderProps {
     children?: ReactNode;
 }
 
+async function uploadFile(file: File): Promise<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const res = await fetch('/api/local/upload', {
+        method: 'POST',
+        body: formData,
+    });
+
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Upload failed');
+    return data.url; // e.g. "/uploads/abc123.png"
+}
+
 export default function ImageUploader({
     onImageUpload,
     className = '',
@@ -16,9 +30,10 @@ export default function ImageUploader({
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         accept: { 'image/*': [] },
         multiple: false,
-        onDrop: (acceptedFiles) => {
+        onDrop: async (acceptedFiles) => {
             if (acceptedFiles.length > 0) {
-                onImageUpload(URL.createObjectURL(acceptedFiles[0]));
+                const url = await uploadFile(acceptedFiles[0]);
+                onImageUpload(url);
             }
         }
     });

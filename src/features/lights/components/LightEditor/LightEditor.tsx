@@ -1,69 +1,18 @@
 import { useState } from "react";
 import PopupOverlay from "@/shared/components/PopupOverlay";
-import { useRooms } from "@/features/rooms/hooks/useRooms";
-import type { LightConfig } from "@/features/rooms/types/rooms";
+import useCurrentRoom from "@/shared/hooks/useCurrentRoom";
+import useLightConfigs from "@/features/lights/hooks/useLightConfigs";
 import LightEditorPreview from "@/features/lights/components/LightEditor/LightEditorPreview";
 import LightEditorControls from "@/features/lights/components/LightEditor/LightEditorControls";
 import './LightEditor.css';
 
 export default function LightEditor({ imageSrc, entityId, entityData, onClose }: { imageSrc: string, entityId: string, entityData?: any, onClose: () => void }) {
-    const { currentRoom, lightMap, setLightMap } = useRooms();
-
-    // Now an array of configs
-    const [configs, setConfigs] = useState<LightConfig[]>(
-        lightMap.get(entityId) || [{
-            type: 'point',
-            maxBrightness: 1,
-            radius: 50,
-            angle: 180,
-            spread: 60,
-            position: { x: 50, y: 50 }
-        }]
-    );
-    const [activeIndex, setActiveIndex] = useState<number>(0);
-    const [isSaved, setIsSaved] = useState(false);
+    const { room: currentRoom } = useCurrentRoom();
+    const lightConfigs = useLightConfigs(entityId);
     const [isNightView, setIsNightView] = useState(false);
 
     const hasNightImage = !!currentRoom?.nightImage;
     const displayImage = (isNightView && currentRoom?.nightImage) ? currentRoom.nightImage : imageSrc;
-
-    const updateConfig = (index: number, updates: Partial<LightConfig>) => {
-        setConfigs(prev => {
-            const newConfigs = [...prev];
-            newConfigs[index] = { ...newConfigs[index], ...updates };
-            return newConfigs;
-        });
-        setIsSaved(false);
-    };
-
-    const addLight = () => {
-        setConfigs(prev => [...prev, {
-            type: 'point',
-            maxBrightness: 1,
-            radius: 50,
-            angle: 180,
-            spread: 60,
-            position: { x: 50, y: 50 }
-        }]);
-        setActiveIndex(configs.length);
-        setIsSaved(false);
-    };
-
-    const removeLight = (index: number) => {
-        if (configs.length === 1) return;
-        setConfigs(prev => prev.filter((_, i) => i !== index));
-        if (activeIndex >= index) {
-            setActiveIndex(Math.max(0, activeIndex - 1));
-        }
-        setIsSaved(false);
-    };
-
-    const handleSave = () => {
-        setLightMap(new Map(lightMap).set(entityId, configs));
-        setIsSaved(true);
-    };
-
-    const activeConfig = configs[activeIndex];
 
     return (
         <PopupOverlay>
@@ -71,30 +20,29 @@ export default function LightEditor({ imageSrc, entityId, entityData, onClose }:
                 <div className="light-editor-content-wrapper">
 
                     <LightEditorPreview
-                        currentRoom={currentRoom}
                         imageSrc={displayImage}
-                        configs={configs}
-                        activeIndex={activeIndex}
+                        configs={lightConfigs.configs}
+                        activeIndex={lightConfigs.activeIndex}
                         entityData={entityData}
-                        updateConfig={updateConfig}
-                        setActiveIndex={setActiveIndex}
-                        setIsSaved={setIsSaved}
+                        updateConfig={lightConfigs.updateConfig}
+                        setActiveIndex={lightConfigs.setActiveIndex}
+                        setIsSaved={lightConfigs.setIsSaved}
                     />
 
                     <LightEditorControls
-                        configs={configs}
-                        activeIndex={activeIndex}
-                        activeConfig={activeConfig}
-                        isSaved={isSaved}
+                        configs={lightConfigs.configs}
+                        activeIndex={lightConfigs.activeIndex}
+                        activeConfig={lightConfigs.activeConfig}
+                        isSaved={lightConfigs.isSaved}
                         isNightView={isNightView}
                         hasNightImage={hasNightImage}
-                        updateConfig={updateConfig}
-                        addLight={addLight}
-                        removeLight={removeLight}
-                        setActiveIndex={setActiveIndex}
+                        updateConfig={lightConfigs.updateConfig}
+                        addLight={lightConfigs.addLight}
+                        removeLight={lightConfigs.removeLight}
+                        setActiveIndex={lightConfigs.setActiveIndex}
                         toggleNightView={() => setIsNightView(prev => !prev)}
                         onClose={onClose}
-                        handleSave={handleSave}
+                        handleSave={lightConfigs.save}
                     />
 
                 </div>

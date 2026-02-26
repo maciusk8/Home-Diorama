@@ -3,14 +3,16 @@ import PopupOverlay from "@/shared/components/PopupOverlay";
 import { DroppableMap } from "@/features/dnd/components/DroppableMap";
 import { useRef, useState } from "react";
 import { calcDropPercent, translateToString } from "@/shared/utils/geometry";
-import { useRooms } from "@/features/rooms/hooks/useRooms";
+import useCurrentRoom from "@/shared/hooks/useCurrentRoom";
 import { DndContext, type DragEndEvent, type DragStartEvent, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import DraggableEntityPin from '@/features/dnd/components/DraggableEntityPin';
+import DraggableAreaPoint from '@/features/dnd/components/DraggableAreaPoint';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import './ImageAreaSelector.css';
 
 export default function ImageAreaSelector({ imageSrc, entityId, onClose }: { imageSrc: string, entityId: string, onClose: () => void }) {
     const mapRef = useRef<HTMLDivElement>(null);
-    const { currentRoom, areaMap, setAreaMap } = useRooms();
+    const { room: currentRoom, areaMap } = useCurrentRoom();
+    const queryClient = useQueryClient();
     const [activeId, setActiveId] = useState<string | null>(null);
     const [activePopupIndex, setActivePopupIndex] = useState<number | null>(null);
     const [value, setValue] = useState<[number, number][]>(areaMap.get(entityId) ?? []);
@@ -21,6 +23,18 @@ export default function ImageAreaSelector({ imageSrc, entityId, onClose }: { ima
             activationConstraint: { distance: 5 },
         })
     );
+
+    const saveAreaMutation = useMutation({
+        mutationFn: (points: [number, number][]) =>
+            fetch(`/api/local/areas/by-pin/${entityId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    points,
+                }),
+            }),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['homeData'] }),
+    });
 
     const handleClick = (e: React.PointerEvent<HTMLDivElement>) => {
         setIsSaved(false);
@@ -53,7 +67,7 @@ export default function ImageAreaSelector({ imageSrc, entityId, onClose }: { ima
         if (!mapRef.current || !currentRoom) return;
         const { active, over } = event;
 
-        if (over?.id === currentRoom.name && active.data.current?.pinType === 'area_point') {
+        if (over?.id === currentRoom.id && active.data.current?.pinType === 'area_point') {
             const dropPosition = calcDropPercent(active, mapRef.current);
             if (!dropPosition) return;
 
@@ -79,7 +93,7 @@ export default function ImageAreaSelector({ imageSrc, entityId, onClose }: { ima
     };
 
     const handleSave = () => {
-        setAreaMap(new Map(areaMap).set(entityId, value));
+        saveAreaMutation.mutate(value);
         setIsSaved(true);
     };
 
@@ -88,7 +102,7 @@ export default function ImageAreaSelector({ imageSrc, entityId, onClose }: { ima
             <div className="image-area-selector-container m-auto image-area-selector-container-inner">
                 <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                     <div className="image-area-selector-relative-box">
-                        <DroppableMap id={currentRoom!.name} ref={mapRef}>
+                        <DroppableMap id={currentRoom!.id} ref={mapRef}>
                             <img
                                 src={imageSrc}
                                 alt="Room"
@@ -98,12 +112,11 @@ export default function ImageAreaSelector({ imageSrc, entityId, onClose }: { ima
                             />
 
                             {value.map((point, index) => (
-                                <DraggableEntityPin
+                                <DraggableAreaPoint
                                     key={`area-point-${index}`}
-                                    entityId={`area-point-${index}`}
+                                    pointId={`area-point-${index}`}
                                     x={point[0]}
                                     y={point[1]}
-                                    type="area_point"
                                     disabled={activePopupIndex !== null}
                                     isOpen={activePopupIndex === index}
                                     onOpen={() => setActivePopupIndex(index)}
