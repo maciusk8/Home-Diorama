@@ -52,7 +52,7 @@ export default function EntityEditCard({ entityId, customName, entityData, onClo
                     <AbstractEntityCard.State value={entityData?.state ?? 'unknown'} />
                 </AbstractEntityCard.Body>
 
-                <button className="entity-card-area-btn" onClick={() => { setIsOpen(true) }}>Set clik area</button>
+                <button className="entity-card-area-btn" onClick={() => { setIsOpen(true) }}>Set click area</button>
                 {isLight && (
                     <button
                         className="entity-card-area-btn entity-card-light-overlay-btn"

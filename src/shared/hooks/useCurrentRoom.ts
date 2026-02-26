@@ -57,7 +57,7 @@ export default function useCurrentRoom(): CurrentRoomData {
             // area.points is JSON string of [number, number][]
             try {
                 const points = JSON.parse(area.points) as [number, number][];
-                map.set(pin.typeId, points);
+                map.set(pin.id, points);
             } catch { /* skip malformed */ }
         }
         return map;
