@@ -4,6 +4,7 @@ export type Room = {
   nightImage: string | null;
   bgColor: string;
   entities: Entity[];
+  lightMap: LightConfig[];
 }
 
 export type Entity = {

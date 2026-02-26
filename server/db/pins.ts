@@ -1,6 +1,7 @@
 import { db } from "./connection";
+import type { DbPin } from "./types";
 
-export const insertPin = (pin: any) => {
+export const insertPin = (pin: DbPin) => {
     db.query(`
     INSERT INTO roomPins (id, roomId, typeId, x, y, customName)
     VALUES ($id, $roomId, $typeId, $x, $y, $customName)
@@ -18,7 +19,7 @@ export const getPinsByType = (typeId: string) => {
     return db.query(`SELECT * FROM roomPins WHERE typeId = $typeId`).all({ $typeId: typeId });
 };
 
-export const updatePin = (pin: any) => {
+export const updatePin = (pin: DbPin) => {
     db.query(`
     UPDATE roomPins SET 
       roomId = $roomId, 

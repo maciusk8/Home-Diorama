@@ -1,4 +1,5 @@
 import { db } from "./connection";
+import type { DbRoom } from "./types";
 
 export const getRoomsData = () => {
     const rooms = db.query(`SELECT * FROM rooms`).all();
@@ -13,7 +14,7 @@ export const getRoomById = (id: string) => {
     return db.query(`SELECT * FROM rooms WHERE id = $id`).get({ $id: id });
 };
 
-export const insertRoom = (room: any) => {
+export const insertRoom = (room: DbRoom) => {
     db.query(`
     INSERT INTO rooms (id, name, image, nightImage, bgColor) 
     VALUES ($id, $name, $image, $nightImage, $bgColor)
@@ -26,7 +27,7 @@ export const insertRoom = (room: any) => {
     });
 };
 
-export const updateRoom = (room: any) => {
+export const updateRoom = (room: DbRoom) => {
     db.query(`
     UPDATE rooms SET 
       name = $name, 

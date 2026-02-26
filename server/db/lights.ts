@@ -1,6 +1,7 @@
 import { db } from "./connection";
+import type { DbLight } from "./types";
 
-export const insertLight = (light: any) => {
+export const insertLight = (light: DbLight) => {
     db.query(`
     INSERT INTO entityLights (id, roomId, typeId, maxBrightness, radius, angle, spread, x, y)
     VALUES ($id, $roomId, $typeId, $maxBrightness, $radius, $angle, $spread, $x, $y)
@@ -17,7 +18,7 @@ export const insertLight = (light: any) => {
     });
 };
 
-export const updateLight = (light: any) => {
+export const updateLight = (light: DbLight) => {
     db.query(`
     UPDATE entityLights SET 
       typeId = $typeId, 
