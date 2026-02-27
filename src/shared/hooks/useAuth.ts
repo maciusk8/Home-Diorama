@@ -2,8 +2,8 @@ import { useWebSocket } from '@/shared/hooks/useWebSocket';
 import { useState, useEffect } from 'react';
 import type { HAConnectionStatus } from '@/shared/types/protocol';
 
-export function useAuth(haToken: string, url: string) {
-    const { connectionStatus, lastMessage, error, sendMessage, reconnect } = useWebSocket(url);
+export function useAuth(haToken: string, url: string, options: { onMessage: (message: Record<string, any>) => void }) {
+    const { connectionStatus, lastMessage, error, sendMessage, reconnect } = useWebSocket(url, options);
     const [status, setStatus] = useState<HAConnectionStatus>('disconnected');
 
     useEffect(() => {
@@ -27,7 +27,7 @@ export function useAuth(haToken: string, url: string) {
                 break;
 
             case 'auth_ok':
-                setStatus('authenticated'); 
+                setStatus('authenticated');
                 console.log('Successfully authenticated with Home Assistant');
                 break;
 
@@ -39,7 +39,7 @@ export function useAuth(haToken: string, url: string) {
     }, [lastMessage, haToken, sendMessage]);
 
     return {
-        status,      
+        status,
         lastMessage,
         error,
         sendMessage,

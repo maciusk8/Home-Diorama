@@ -4,10 +4,16 @@ import type { HAConnectionStatus } from '@/shared/types/protocol';
 const MAX_RETRY_ATTEMPTS = 5;
 const BASE_RETRY_DELAY_MS = 1000;
 
-export function useWebSocket(url: string) {
+export function useWebSocket(url: string, options: { onMessage: (message: Record<string, any>) => void }) {
     const [connectionStatus, setConnectionStatus] = useState<HAConnectionStatus>('disconnected');
     const [lastMessage, setLastMessage] = useState<Record<string, any> | null>(null);
     const [error, setError] = useState<string | null>(null);
+
+    const onMessageRef = useRef(options.onMessage);
+
+    useEffect(() => {
+        onMessageRef.current = options.onMessage;
+    }, [options.onMessage]);
 
     const ws = useRef<WebSocket | null>(null);
     const retryCount = useRef<number>(0);
@@ -32,6 +38,9 @@ export function useWebSocket(url: string) {
         ws.current.onmessage = (event) => {
             try {
                 const message: Record<string, any> = JSON.parse(event.data);
+                if (onMessageRef.current) {
+                    onMessageRef.current(message);
+                }
                 setLastMessage(message);
             } catch (e) {
                 setError("Failed to parse message: " + e);

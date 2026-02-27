@@ -133,6 +133,9 @@ export default function EntitySwitchCard({ entityId, customName, entityData, onC
                                 toggle(entityId);
                             }}
                             className="entity-switch-card-custom-slider"
+                            style={{
+                                backgroundColor: isOn ? '#ffc107' : undefined,
+                            }}
                         >
                             {/* Track only thumb is draggable overlay */}
                         </div>
