@@ -14,7 +14,7 @@ export default function NavBar({ isEditing, setEditing }:
     const slugMap = rooms ? generateSlugs(rooms) : new Map<string, string>();
 
     return isEditing ? (
-        <Nav variant="tabs" className='nav'>
+        <Nav className='nav'>
             {rooms?.map((room) => (
                 <Nav.Item key={room.id}>
                     <Nav.Link
@@ -44,7 +44,7 @@ export default function NavBar({ isEditing, setEditing }:
         </Nav>
 
     ) : (
-        <Nav variant="tabs" className='nav'>
+        <Nav className='nav'>
             {rooms?.map((room) => (
                 <Nav.Item key={room.id}>
                     <Nav.Link as={NavLink} to={`/${slugMap.get(room.id)}`}>

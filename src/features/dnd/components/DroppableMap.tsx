@@ -18,15 +18,13 @@ export const DroppableMap = forwardRef<HTMLDivElement, { children: React.ReactNo
     };
 
     const style: React.CSSProperties = {
-      flex: 1,
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       height: '100%',
-      width: '100%',
       position: 'relative',
-      outline: isOver ? '4px solid #4caf50' : 'none',
-      transition: 'outline 0.2s',
+      boxShadow: isOver ? 'inset 0 0 0 4px #4caf50' : 'none',
+      transition: 'box-shadow 0.2s',
       overflow: 'hidden',
     };
 

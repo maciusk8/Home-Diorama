@@ -37,6 +37,7 @@ export default function ImageDisplay({ room, changeImage, isEditing, sunEntity }
                     src={image}
                     alt="Room"
                     className="image-display-img"
+                    draggable={false}
                 />
             </div>
         );
@@ -52,6 +53,7 @@ export default function ImageDisplay({ room, changeImage, isEditing, sunEntity }
                     src={image}
                     alt="Room"
                     className="image-uploader-img"
+                    draggable={false}
                 />
             )}
         </ImageUploader>
