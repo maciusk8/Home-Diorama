@@ -10,6 +10,16 @@
 Home Assistant Diorama is a web application that acts as an advanced client for Home Assistant. It allows visualizing and controlling smart home devices via an interactive room diorama. It was built with the idea of utilizing AI capabilities to transform photos of rooms into aesthetic diorama views. It features an interactive UI that allows mapping Home Assistant entities onto polygonal clickable areas, making smart home control highly intuitive and visually pleasing.
 
 ## Running the Application
+
+### Configuration
+Before running the application, you need to configure your environment variables. Create a `.env` file in the root directory of the project and provide your Home Assistant address and long-lived access token:
+
+```env
+VITE_HA_HTTP_URL=http://homeassistant.local:8123
+VITE_HA_TOKEN=your_long_lived_access_token_here
+```
+
+### Starting the Server
 To run the application locally, you first need to make sure you have [Bun](https://bun.sh/) installed via your system's package manager. Then, you simply need to execute the start script. It will automatically install dependencies, initialize the database (if necessary), and start both the backend and frontend servers:
 
 ```bash
