@@ -27,8 +27,11 @@ const initScript = db.transaction(() => {
     );
   `).run();
 
-  db.query(`INSERT OR IGNORE INTO pinTypes (id, name) VALUES ($id, 'entity')`)
-    .run({ $id: crypto.randomUUID() });
+  const existingEntityPin = db.query(`SELECT id FROM pinTypes WHERE name = 'entity' LIMIT 1`).get();
+  if (!existingEntityPin) {
+    db.query(`INSERT INTO pinTypes (id, name) VALUES ($id, 'entity')`)
+      .run({ $id: crypto.randomUUID() });
+  }
 
   //room pins
   db.query(`
@@ -52,10 +55,17 @@ const initScript = db.transaction(() => {
     );
   `).run();
 
-  db.query(`INSERT OR IGNORE INTO lightTypes (id, name) VALUES ($id, 'Point Light')`)
-    .run({ $id: crypto.randomUUID() });
-  db.query(`INSERT OR IGNORE INTO lightTypes (id, name) VALUES ($id, 'Directional Light')`)
-    .run({ $id: crypto.randomUUID() });
+  const existingPointLight = db.query(`SELECT id FROM lightTypes WHERE name = 'Point Light' LIMIT 1`).get();
+  if (!existingPointLight) {
+    db.query(`INSERT INTO lightTypes (id, name) VALUES ($id, 'Point Light')`)
+      .run({ $id: crypto.randomUUID() });
+  }
+
+  const existingDirLight = db.query(`SELECT id FROM lightTypes WHERE name = 'Directional Light' LIMIT 1`).get();
+  if (!existingDirLight) {
+    db.query(`INSERT INTO lightTypes (id, name) VALUES ($id, 'Directional Light')`)
+      .run({ $id: crypto.randomUUID() });
+  }
 
   //entity lights — tied to a specific pin in a room
   db.query(`

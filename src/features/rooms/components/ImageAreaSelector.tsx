@@ -149,6 +149,9 @@ export default function ImageAreaSelector({ imageSrc, entityId, onClose }: { ima
                 </DndContext>
 
                 <div className="d-flex justify-content-end gap-3 mt-3 w-100">
+                    <Button variant="danger" onClick={() => setValue([])} className="me-auto">
+                        Clear All
+                    </Button>
                     <Button variant="secondary" onClick={onClose}>Close</Button>
                     <Button variant={isSaved ? "success" : "primary"} onClick={handleSave}>
                         {isSaved ? "Saved!" : "Save"}

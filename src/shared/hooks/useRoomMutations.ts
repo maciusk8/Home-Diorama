@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 import type { DbRoom } from '../../../server/db/types';
 
 export default function useRoomMutations() {
@@ -36,7 +37,7 @@ export default function useRoomMutations() {
         const name = prompt("Enter room name:");
         if (!name) return;
 
-        const id = crypto.randomUUID();
+        const id = uuidv4();
 
         const room: DbRoom = {
             id,
