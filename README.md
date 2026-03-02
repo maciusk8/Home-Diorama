@@ -68,6 +68,12 @@ The following data is stored outside the container (in `./data/`) and persists a
 > [!NOTE]
 > The `VITE_HA_*` environment variables are embedded into the frontend at build time. If you change the Home Assistant address or token, you need to rebuild the image with `./deploy.sh` or `docker compose up -d --build`.
 
+> [!IMPORTANT]
+> **Why can't I just `docker pull` and run?**
+> The application started as a simple React client that connects directly to Home Assistant from the browser via WebSocket. Because of this, the HA address and access token must be baked into the frontend JavaScript at build time — meaning you currently need to **build the image yourself** with your own credentials.
+>
+> A **server-side proxy** is planned, which will move the Home Assistant connection to the backend. Once implemented, the Docker image will accept `HA_HTTP_URL` and `HA_TOKEN` as runtime environment variables (`docker run -e`), making it possible to distribute a single pre-built image via `docker pull`.
+
 ## Home Assistant Integration
 The project acts as an advanced client communicating directly with your Home Assistant instance using a WebSocket connection and a Long-Lived Access Token. No external cloud servers mediate this connection.
 
