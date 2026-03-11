@@ -34,9 +34,7 @@ RUN mkdir -p data
 # Create uploads directory inside data
 RUN mkdir -p data/uploads
 
-# Initialize the database (this will create it in data/ if it doesn't exist)
-RUN bun run server/init-db.ts
-
 EXPOSE 3000
 
-CMD ["bun", "run", "server/index.ts"]
+# Start the server (ensure DB is initialized first)
+CMD ["sh", "-c", "bun run server/init-db.ts && bun run server/index.ts"]
